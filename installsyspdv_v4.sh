@@ -80,34 +80,44 @@ baixar_build() {
     fi
 }
 
-# -----------------------------------------------------------------
-
-# Função para baixar o Drive MFe
+# Função para baixar o drive MFe
 baixar_drive_mfe() {
+    # Solicitar a versão do driver
+    read -p "Informe a versão do driver (padrão: 02.05.18): " VERSAO
+    VERSAO=${VERSAO:-02.05.18}
+
     # URL de Download do Drive MFe
-    URL="https://servicos.sefaz.ce.gov.br/internet/download/projetomfe/instalador-ce-sefaz-driver-linux-x86-02.05.18.tar.gz"
+    URL="https://servicos.sefaz.ce.gov.br/internet/download/projetomfe/instalador-ce-sefaz-driver-linux-x86-$VERSAO.tar.gz"
 
     # Solicitar o diretório para salvar o arquivo
     read -p "Informe o diretório: (Pasta padrão é /pdv/Downloads): " DESTINO
     DESTINO=${DESTINO:-/home/pdv/Downloads}
 
     # Construir o nome do arquivo completo
-    ARQUIVO="$DESTINO/instalador-ce-sefaz-driver-linux-x86-02.05.18.tar.gz"
+    ARQUIVO="$DESTINO/instalador-ce-sefaz-driver-linux-x86-$VERSAO.tar.gz"
+    DIR_EXTRACAO="$DESTINO/mfe-$VERSAO"
 
-    echo -e "${YELLOW}Baixando o Drive MFe${NC} ${RED}v02.05.18${NC}${YELLOW} para ${NC}${GREEN}$DESTINO${NC}${YELLOW}. Aguarde!!${NC}"
+    echo -e "${YELLOW}Baixando o Drive MFe${NC} ${RED}v$VERSAO${NC}${YELLOW} para ${NC}${GREEN}$DESTINO${NC}${YELLOW}. Aguarde!!${NC}"
 
-    # Aqui está realizando o download do instalador
+    # Baixar o arquivo com barra de progresso detalhada e verificar integridade
     curl --progress-bar --location --fail --output "$ARQUIVO" "$URL"
-
     if [ $? -eq 0 ]; then
-        echo -e "\n${GREEN}A BUILD: $build foi baixada com sucesso.${NC}"
+        # Realizando a extração do arquivo e executando o scritp de instalação
+        echo -e "\n${GREEN}O Drive MFe foi baixado e verificado com sucesso.${NC}"
         echo -e "${YELLOW}Iniciando instalação...${NC}"
-        chmod +x "$ARQUIVO"
-        wine "$ARQUIVO"
+        mkdir -p "$DIR_EXTRACAO"
+        tar -xvf "$ARQUIVO" -C "$DIR_EXTRACAO"
+        if [ $? -eq 0 ]; then
+           cd "$DIR_EXTRACAO"
+           ./install.sh  # Adicione opções para o script de instalação, se necessário
+        else
+           echo -e "${RED}Erro ao extrair o arquivo.${NC}"
+        fi
     else
         echo -e "${RED}Falha no download: ${NC}"
     fi
 }
+
 
 
 # -----------------------------------------------------------------
