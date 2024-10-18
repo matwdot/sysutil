@@ -86,41 +86,62 @@ baixar_drive_mfe() {
     read -p "Informe a versão do driver (padrão: 02.05.18): " VERSAO
     VERSAO=${VERSAO:-02.05.18}
 
-    # URL de Download do Drive MFe
-    URL="https://servicos.sefaz.ce.gov.br/internet/download/projetomfe/instalador-ce-sefaz-driver-linux-x86-$VERSAO.tar.gz"
+    # URL de Download do Driver MFe
+    URL="http://servicos.sefaz.ce.gov.br/internet/download/projetomfe/instalador-ce-sefaz-driver-linux-x86-$VERSAO.tar.gz"
 
     # Solicitar o diretório para salvar o arquivo
-    read -p "Informe o diretório: (Pasta padrão é /pdv/Downloads): " DESTINO
+    read -p "Informe o diretório (padrão: /home/pdv/Downloads): " DESTINO
     DESTINO=${DESTINO:-/home/pdv/Downloads}
 
     # Construir o nome do arquivo completo
     ARQUIVO="$DESTINO/instalador-ce-sefaz-driver-linux-x86-$VERSAO.tar.gz"
-    DIR_EXTRACAO="$DESTINO/mfe-$VERSAO"
+    DIR_EXTRACAO="$DESTINO"
 
-    echo -e "${YELLOW}Baixando o Drive MFe${NC} ${RED}v$VERSAO${NC}${YELLOW} para ${NC}${GREEN}$DESTINO${NC}${YELLOW}. Aguarde!!${NC}"
+    echo -e "${YELLOW}Baixando o Driver MFe${NC} ${RED}v$VERSAO${NC}${YELLOW} para ${NC}${GREEN}$DESTINO${NC}${YELLOW}. Aguarde!${NC}"
 
-    # Baixar o arquivo com barra de progresso detalhada e verificar integridade
+    # Baixar o arquivo com barra de progresso detalhada
     curl --progress-bar --location --fail --output "$ARQUIVO" "$URL"
+
     if [ $? -eq 0 ]; then
-        # Realizando a extração do arquivo e executando o scritp de instalação
-        echo -e "\n${GREEN}O Drive MFe foi baixado e verificado com sucesso.${NC}"
+        echo -e "\n${GREEN}O Driver MFe foi baixado com sucesso.${NC}"
         echo -e "${YELLOW}Iniciando instalação...${NC}"
-        mkdir -p "$DIR_EXTRACAO"
+        # mkdir -p "$DIR_EXTRACAO"
+        
+        # Extrair o arquivo
         tar -xvf "$ARQUIVO" -C "$DIR_EXTRACAO"
         if [ $? -eq 0 ]; then
-           cd "$DIR_EXTRACAO"
-           ./install.sh  # Adicione opções para o script de instalação, se necessário
+            # Verificar se o diretório foi alterado com sucesso
+            if cd "$DIR_EXTRACAO/instalador-ce-sefaz-driver-linux-x86-$VERSAO"; then
+                # Verificar se o script de instalação existe e tem permissão de execução
+                if [ -x "./instala-driver.sh" ]; then
+                    sudo ./instala-driver.sh 
+                    if [ $? -eq 0 ]; then
+                        echo -e "${GREEN}Instalação concluída com sucesso.${NC}"
+                        sleep 2
+                    else
+                        echo -e "${RED}Erro durante a instalação do driver.${NC}"
+                        sleep 2
+                    fi
+                else
+                    echo -e "${RED}Erro: o script de instalação não foi encontrado ou não é executável.${NC}"
+                    sleep 2
+                fi
+            else
+                echo -e "${RED}Erro: falha ao acessar o diretório de extração.${NC}"
+                sleep 2
+            fi
         else
-           echo -e "${RED}Erro ao extrair o arquivo.${NC}"
+            echo -e "${RED}Erro ao extrair o arquivo.${NC}"
+            sleep 2
         fi
+
+        # Agora pode remover o arquivo baixado
+        rm "$ARQUIVO"
+        # rm -rf "$DIR_EXTRACAO"  # Descomentar para remover o diretório após a instalação
     else
-        echo -e "${RED}Falha no download: ${NC}"
+        echo -e "${RED}Falha no download.${NC}"
     fi
 }
-
-
-
-# -----------------------------------------------------------------
 
 
 # Função que abre arquivos de configuração dos perifericos
@@ -140,7 +161,7 @@ configurar_perifericos() {
             editor="subl"
         else
             echo -e "${YELLOW}Sublime Text não encontrado. Utilizando o editor padrão (nano).${NC}"
-            editor="nano"
+            editor="vi"
         fi
 
         # Abrir os arquivos e verificar se foram abertos com sucesso
@@ -182,6 +203,24 @@ instalar_vpn() {
     fi
 }
 
+# Função para instalar a Drive MFe
+instalar_drive_mfe() {
+    echo -n -e "${YELLOW}Deseja instalar o Drive MFe? (S/n): ${NC}"
+    read confirm
+
+    # Validação mais robusta da resposta
+    while [[ "$confirm" != "S" && "$confirm" != "N" && "$confirm" != "s" && "$confirm" != "n" ]]; do
+        echo -n -e "${RED}Opção inválida. (S = Sim | N = Não): ${NC}"
+        read confirm
+    done
+
+    if [[ "$confirm" == "S" || "$confirm" == "s" ]]; then
+        baixar_drive_mfe
+    else
+        echo -e "${RED}Instalação Drive MFE cancelada.${NC}"
+    fi
+}
+
 # Função para instalar o SysPDV
 instalar_syspdv() {
   requisitos
@@ -191,6 +230,7 @@ instalar_syspdv() {
     baixar_build
     configurar_perifericos
     instalar_vpn
+    instalar_drive_mfe  
   else
     echo "Instalação cancelada!"
   fi
@@ -221,7 +261,7 @@ while true; do
   echo -e "\033[1m          Utilitários\033[0m"
   echo "--------------------------------"
   echo "3. Instalar VPN"
-  echo "4. Instalar Driver MFe (dev)"
+  echo "4. Instalar Driver MFe"
   echo "5. Configurar Periféricos"
   echo "6. Configurar DocGate (dev)"
   echo "7. Configurar Biométrico (dev)"
@@ -251,6 +291,11 @@ while true; do
     # Instalação da VPN
     clear
     instalar_vpn
+    ;;
+  4)
+    # Instalar Drive MFe
+    clear
+    instalar_drive_mfe    
     ;;
   5)
     # Configurar Perifericos
