@@ -2,7 +2,7 @@
 # ****************************************************************
 #
 # Script de Instalação/Atualização do SysPDV PDV nos Caixas Linux
-# Versão: 3.1
+# Versão: 4.0
 # Desenvolvido por: Matheus Wesley
 # Contatos: https://matheuswesley.github.io/devlinks
 #
@@ -48,23 +48,36 @@ requisitos(){
 
 # Função para baixar a BUILD
 baixar_build() {
-  echo -n -e "${BLUE}Informe a BUILD para download: ${NC}"
-  read build
-  echo -e "${YELLOW}Baixando a BUILD${NC} ${RED}$build${NC}${YELLOW}. Aguarde!!${NC}"
+    # Solicitar a BUILD e validar a URL
+    read -p "Informe a BUILD para download: " build
+    URL="https://objectstorage.us-ashburn-1.oraclecloud.com/n/casamagalhaes/b/syspdv/o/b$build/InstaladorSysPDV19_0_0_$build.exe"
 
-  URL="https://objectstorage.us-ashburn-1.oraclecloud.com/n/casamagalhaes/b/syspdv/o/b$build/InstaladorSysPDV19_0_0_$build.exe"
-  DESTINO="/home/pdv/Downloads/InstaladorSysPDV19_0_0_$build.exe"
+    # Verificar se a URL possui o formato esperado (exemplo básico)
+    if ! [[ $URL =~ ^https://.* ]]; then
+        echo -e "${RED}URL inválida.${NC}"
+        return 1
+    fi
 
-  curl --progress-bar -o "$DESTINO" "$URL"
+    # Solicitar o diretório para salvar o arquivo
+    read -p "Informe o diretório: (Pasta padrão é /pdv/Downloads): " DESTINO
+    DESTINO=${DESTINO:-/home/pdv/Downloads}
 
-  if [ $? -eq 0 ]; then
-    echo -e "\n${GREEN}A BUILD: $build foi baixada em /home/pdv/Downloads${NC}"
-    echo -e "${YELLOW}Iniciando instalação...${NC}"
-    chmod +x "$DESTINO"
-    wine "$DESTINO"
-  else
-    echo -e "${RED}Falha no download.${NC}"
-  fi
+    # Construir o nome do arquivo completo
+    ARQUIVO="$DESTINO/InstaladorSysPDV19_0_0_$build.exe"
+
+    echo -e "${YELLOW}Baixando a BUILD${NC} ${RED}$build${NC}${YELLOW} para ${NC}${GREEN}$DESTINO${NC}${YELLOW}. Aguarde!!${NC}"
+
+    # Aqui está realizando o download do instalador
+    curl --progress-bar --location --fail --output "$ARQUIVO" "$URL"
+
+    if [ $? -eq 0 ]; then
+        echo -e "\n${GREEN}A BUILD: $build foi baixada com sucesso.${NC}"
+        echo -e "${YELLOW}Iniciando instalação...${NC}"
+        chmod +x "$ARQUIVO"
+        wine "$ARQUIVO"
+    else
+        echo -e "${RED}Falha no download: ${NC}"
+    fi
 }
 
 
