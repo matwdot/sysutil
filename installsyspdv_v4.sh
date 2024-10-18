@@ -80,6 +80,38 @@ baixar_build() {
     fi
 }
 
+# -----------------------------------------------------------------
+
+# Função para baixar o Drive MFe
+baixar_drive_mfe() {
+    # URL de Download do Drive MFe
+    URL="https://servicos.sefaz.ce.gov.br/internet/download/projetomfe/instalador-ce-sefaz-driver-linux-x86-02.05.18.tar.gz"
+
+    # Solicitar o diretório para salvar o arquivo
+    read -p "Informe o diretório: (Pasta padrão é /pdv/Downloads): " DESTINO
+    DESTINO=${DESTINO:-/home/pdv/Downloads}
+
+    # Construir o nome do arquivo completo
+    ARQUIVO="$DESTINO/instalador-ce-sefaz-driver-linux-x86-02.05.18.tar.gz"
+
+    echo -e "${YELLOW}Baixando o Drive MFe${NC} ${RED}v02.05.18${NC}${YELLOW} para ${NC}${GREEN}$DESTINO${NC}${YELLOW}. Aguarde!!${NC}"
+
+    # Aqui está realizando o download do instalador
+    curl --progress-bar --location --fail --output "$ARQUIVO" "$URL"
+
+    if [ $? -eq 0 ]; then
+        echo -e "\n${GREEN}A BUILD: $build foi baixada com sucesso.${NC}"
+        echo -e "${YELLOW}Iniciando instalação...${NC}"
+        chmod +x "$ARQUIVO"
+        wine "$ARQUIVO"
+    else
+        echo -e "${RED}Falha no download: ${NC}"
+    fi
+}
+
+
+# -----------------------------------------------------------------
+
 
 # Função que abre arquivos de configuração dos perifericos
 configurar_perifericos() {
@@ -179,11 +211,11 @@ while true; do
   echo -e "\033[1m          Utilitários\033[0m"
   echo "--------------------------------"
   echo "3. Instalar VPN"
-  echo "4. Instalar Driver MFe"
+  echo "4. Instalar Driver MFe (dev)"
   echo "5. Configurar Periféricos"
-  echo "6. Configurar DocGate"
-  echo "7. Configurar Biométrico"
-  echo "8. Transferência de Arquivos via SCP"
+  echo "6. Configurar DocGate (dev)"
+  echo "7. Configurar Biométrico (dev)"
+  echo "8. Transferência de Arquivos via SCP (dev)"
   echo "--------------------------------"
   echo -e "Use\033[1m 0 ou q\033[0m para sair."
   echo "--------------------------------"
