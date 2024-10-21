@@ -30,11 +30,11 @@ get_input() {
   echo "$key"
 }
 
-# Função para exibir o menu com a opção selecionada
+# Função de exibição do menu interativo
 show_menu() {
   local highlight=$1
   options=("$@")
-  options=("${options[@]:1}")  # Remove o primeiro argumento
+  options=("${options[@]:1}")
 
   clear
   echo "------------------------------------------"
@@ -43,7 +43,7 @@ show_menu() {
 
   for i in "${!options[@]}"; do
     if [[ $i -eq $highlight ]]; then
-      echo -e "${GREEN}> ${options[$i]}${NC}"  # Opção selecionada
+      echo -e "${GREEN}> ${options[$i]}${NC}"
     else
       echo "  ${options[$i]}"
     fi
@@ -109,9 +109,9 @@ while true; do
     2) clear; instalar_vpn ;;
     3) clear; baixar_drive_mfe ;;
     4) clear; configurar_perifericos ;;
-    5) echo -e "${YELLOW}Configurar DocGate (dev) ainda não implementado.${NC}" ;;
-    6) echo -e "${YELLOW}Configurar Biométrico (dev) ainda não implementado.${NC}" ;;
-    7) echo -e "${YELLOW}Transferência de Arquivos via SCP (dev) ainda não implementado.${NC}" ;;
+    5) clear; echo -e "${YELLOW}Configurar DocGate (dev) ainda não implementado.${NC}"; sleep 2 ;;
+    6) clear; echo -e "${YELLOW}Configurar Biométrico (dev) ainda não implementado.${NC}"; sleep 2 ;;
+    7) clear; echo -e "${YELLOW}Transferência de Arquivos via SCP (dev) ainda não implementado.${NC}"; sleep 2 ;;
     8) clear; exit 0 ;;
     *) echo -e "${RED}Opção inválida!${NC}"; sleep 1; clear ;;
   esac
