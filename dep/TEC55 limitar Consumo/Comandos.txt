@@ -1,0 +1,18 @@
+comando 1
+
+apt-get update
+
+comando 2
+
+apt-get install cpulimit
+
+copiar arquivos da pasta "teclado gertec 55 teclas limitar processamento" para o caminho /usr/local/bin
+
+comando 3
+
+chmod 777 /usr/local/bin/*
+
+comando 4
+
+chmod 777 /opt/Gertec55 -R
+

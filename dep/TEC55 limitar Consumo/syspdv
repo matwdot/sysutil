@@ -1,0 +1,20 @@
+#!/bin/bash
+xset s off
+xset -dpms
+xset s noblank
+xset q > /tmp/xset.pdv.log
+sudo chmod 666 /opt/Syspdv/*.fdb
+sudo -i /usr/local/bin/geraip 1> /dev/null 2>&1
+sudo -i /usr/local/bin/setty 1> /dev/null 2>&1
+sudo -i /usr/local/bin/servidorbiometrico stop 1> /dev/null 2>&1
+sudo -i /usr/local/bin/servidorbiometrico start 1> /dev/null 2>&1
+#--------------------- Desativar Sysnet -----------------------#
+sudo killall Sysnet.exe 1> /dev/null 2>&1
+sudo killall Sysnet.exe 1> /dev/null 2>&1
+sudo killall Sysnet.exe 1> /dev/null 2>&1
+sudo killall Sysnet.exe 1> /dev/null 2>&1
+#-------------------- Iniciar Integrador ----------------------#
+sudo sh /usr/local/bin/./iniciar_integrador 1> /dev/null 2>&1
+sudo sh /usr/local/bin/./limit.sh 1> /dev/null 2>&1 &
+#---------------------- Iniciar SysPDV ------------------------#
+sudo -i wine /opt/Syspdv/Syspdv_pdv.exe 1> /dev/null 2> /tmp/syserro.err
