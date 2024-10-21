@@ -134,6 +134,50 @@ configurar_perifericos() {
   fi
 }
 
+
+# Configura DocGate
+configurar_docgate() {
+
+  # Função para exibir mensagens de erro e abortar a execução
+  error_exit() {
+    echo -e "${RED}$1${NC}" >&2
+    exit 1
+  }
+
+  # Pedir confirmação
+  while true; do
+    read -p "Deseja configurar o DocGate 5.0? (S/n): " confirm
+    case "${confirm,,}" in
+      s|'') break ;;  # '' aceita o valor padrão como 'S'
+      n) echo "Operação cancelada."; return 1 ;;
+      *) echo "Opção inválida. Digite S ou N." ;;
+    esac
+  done
+
+  # Verificar se o arquivo tar.gz existe
+  if [[ ! -f "dep/docgateV5.tar.gz" ]]; then
+    error_exit "Arquivo dep/docgateV5.tar.gz não encontrado. Verifique o caminho e tente novamente."
+  fi
+
+  # Fazer backup do diretório DocGate existente
+  if [[ -d "/opt/docgate" ]]; then
+    echo -e "${YELLOW}Criando backup do DocGate atual...${NC}"
+    sudo mv /opt/docgate /opt/docgate_backup || error_exit "Erro ao renomear o DocGate. Verifique as permissões."
+  else
+    echo -e "${BOLD}Nenhuma instalação anterior do DocGate encontrada. Continuando com a nova instalação...${NC}"
+  fi
+
+  # Extrair o novo DocGate
+  echo -e "${BLUE}Extraindo o DocGate v5...${NC}"
+  sudo tar -xf dep/docgateV5.tar.gz -C /opt || error_exit "Erro ao extrair o DocGate. Verifique o arquivo tar."
+
+  # Mensagem de sucesso e instruções
+  echo -e "${GREEN}Instalação do DocGate v5 realizada com sucesso.${NC}"
+  echo -e "Por favor, acesse o menu ${BOLD}(Ctrl+Alt+Espaço)${NC}, vá em: ${BOLD}\nDispositivos - Ativar Compartilhamento MFE/SAT${NC}\ne selecione ${BOLD}'Ativado'.${NC}\nPressione Enter para continuar..."
+  read -p ""
+}
+
+
 # Instala VPN
 instalar_vpn() {
   echo -n -e "${YELLOW}Deseja instalar a VPN? (S/n): ${NC}"

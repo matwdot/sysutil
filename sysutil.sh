@@ -92,7 +92,7 @@ options=(
   "Instalar VPN"
   "Instalar Driver MFe"
   "Configurar Periféricos"
-  "Configurar DocGate (dev)"
+  "Configurar DocGate"
   "Configurar Biométrico (dev)"
   "Transferência de Arquivos via SCP (dev)"
   "Sair"
@@ -109,7 +109,7 @@ while true; do
     2) clear; instalar_vpn ;;
     3) clear; baixar_drive_mfe ;;
     4) clear; configurar_perifericos ;;
-    5) clear; echo -e "${YELLOW}Configurar DocGate (dev) ainda não implementado.${NC}"; sleep 2 ;;
+    5) clear; configurar_docgate ;;
     6) clear; echo -e "${YELLOW}Configurar Biométrico (dev) ainda não implementado.${NC}"; sleep 2 ;;
     7) clear; echo -e "${YELLOW}Transferência de Arquivos via SCP (dev) ainda não implementado.${NC}"; sleep 2 ;;
     8) clear; exit 0 ;;
