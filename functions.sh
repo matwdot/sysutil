@@ -143,14 +143,17 @@ configurar_docgate() {
     echo -e "${RED}$1${NC}" >&2
     exit 1
   }
+  error_msg() {
+    echo -e "${RED}$1${NC}" >&2
+  }
 
   # Pedir confirmação
   while true; do
     read -p "Deseja configurar o DocGate 5.0? (S/n): " confirm
     case "${confirm,,}" in
-      s|'') break ;;  # '' aceita o valor padrão como 'S'
-      n) echo "Operação cancelada."; return 1 ;;
-      *) echo "Opção inválida. Digite S ou N." ;;
+      s) break ;;  # '' aceita o valor padrão como 'S'
+      n) echo "Operação cancelada."; sleep 2; return 1 ;;
+      *) error_msg "Opção inválida. Digite S ou N." ;;
     esac
   done
 
