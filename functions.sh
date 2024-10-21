@@ -180,6 +180,67 @@ configurar_docgate() {
   read -p ""
 }
 
+# ----------------------------------------
+
+# Configura biometria
+configurar_biometria() {
+  # Função para exibir mensagens de erro
+  error_msg() {
+    echo -e "${RED}$1${NC}" >&2
+  }
+
+  # Função para exibir mensagens de erro e abortar a execução
+  error_exit() {
+    echo -e "${RED}$1${NC}" >&2
+    exit 1
+  }
+
+  # Pedir confirmação para configurar a biometria
+  while true; do
+    echo -n -e "${YELLOW}Deseja configurar a biometria? (S/n): ${NC}"
+    read confirm
+    case "${confirm,,}" in
+      s|S) break ;;  # '' aceita o valor padrão como 'S'
+      n) echo "Operação cancelada."; return 1 ;;
+      *) error_msg "Opção inválida. Digite S ou N." ;;
+    esac
+  done
+
+  # Aplica permissão na pasta 
+  BIOMETRIA_DIR=/opt/ServidorBiometrico/
+  if ! sudo chmod 777 -R "$BIOMETRIA_DIR"; then
+    error_exit "Erro ao aplicar permissão a pasta $BIOMETRIA_DIR."
+    sleep 3
+  fi
+
+
+  # Verificar se o arquivo config.properties existe
+  CONFIG_FILE="/opt/ServidorBiometrico/config.properties"
+  if [[ ! -f "$CONFIG_FILE" ]]; then
+    error_exit "Arquivo config.properties não encontrado em /opt/ServidorBiometrico. Verifique a instalação."
+  fi
+
+  # Abrir o arquivo de configuração
+  echo -e "${YELLOW}Abrindo o arquivo de configuração do servidor biométrico...${NC}"
+  sudo subl "$CONFIG_FILE" || error_exit "Erro ao abrir o arquivo de configuração."
+
+  # Esperar que o usuário termine de configurar
+  echo -e "${YELLOW}Pressione Enter quando concluir a configuração.${NC}"
+  read -p ""
+
+  # Executar o script e verificar se foi bem-sucedido
+  echo -e "${YELLOW}Inicializando o servidor biométrico...${NC}"
+  BIOMETRIA_SCRIPT="/opt/ServidorBiometrico/Scanner/iniciaBiometriaFH80.sh"
+  if ! sudo "$BIOMETRIA_SCRIPT"; then
+    error_exit "Erro ao inicializar o servidor biométrico."
+  fi
+
+  # Mensagem de sucesso
+  echo -e "${GREEN}Configuração da biometria realizada com sucesso!${NC}"
+
+}
+
+# ----------------------------------------
 
 # Instala VPN
 instalar_vpn() {

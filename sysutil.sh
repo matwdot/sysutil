@@ -93,7 +93,7 @@ options=(
   "Instalar Driver MFe"
   "Configurar Periféricos"
   "Configurar DocGate"
-  "Configurar Biométrico (dev)"
+  "Configurar Biométrico"
   "Transferência de Arquivos via SCP (dev)"
   "Sair"
 )
@@ -110,7 +110,7 @@ while true; do
     3) clear; baixar_drive_mfe ;;
     4) clear; configurar_perifericos ;;
     5) clear; configurar_docgate ;;
-    6) clear; echo -e "${YELLOW}Configurar Biométrico (dev) ainda não implementado.${NC}"; sleep 2 ;;
+    6) clear; configurar_biometria ;;
     7) clear; echo -e "${YELLOW}Transferência de Arquivos via SCP (dev) ainda não implementado.${NC}"; sleep 2 ;;
     8) clear; exit 0 ;;
     *) echo -e "${RED}Opção inválida!${NC}"; sleep 1; clear ;;
