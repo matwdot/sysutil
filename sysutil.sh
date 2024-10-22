@@ -98,6 +98,7 @@ options=(
   "Configurar Periféricos"
   "Configurar DocGate"
   "Configurar Biométrico"
+  "Limitar Consumo Tec55"
   "Transferência de Arquivos via SCP (dev)"
   "Sair"
 )
@@ -115,8 +116,9 @@ while true; do
     4) clear; configurar_perifericos ;;
     5) clear; configurar_docgate ;;
     6) clear; configurar_biometria ;;
-    7) clear; echo -e "${YELLOW}Transferência de Arquivos via SCP (dev) ainda não implementado.${NC}"; sleep 2 ;;
-    8) clear; exit 0 ;;
+    7) clear; limitar_consumo ;;
+    8) clear; echo -e "${YELLOW}Transferência de Arquivos via SCP (dev) ainda não implementado.${NC}"; sleep 2 ;;
+    9) clear; exit 0 ;;
     *) echo -e "${RED}Opção inválida!${NC}"; sleep 1; clear ;;
   esac
 done

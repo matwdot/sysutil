@@ -262,6 +262,63 @@ configurar_biometria() {
 
 }
 
+# ------------------------------------
+
+# Limitar Consumo Tec55
+limitar_consumo() {
+  # Função para exibir mensagens de erro
+  error_msg() {
+    echo -e "${RED}$1${NC}" >&2
+  }
+
+  # Função para exibir mensagens de erro e abortar a execução
+  error_exit() {
+    echo -e "${RED}$1${NC}" >&2
+    exit 1
+  }
+
+  # Pedir confirmação para configurar o limitador de consumo
+  while true; do
+    echo -n -e "${YELLOW}Deseja configurar o limitador de consumo para o TEC55? (S/n): ${NC}"
+    read confirm
+    case "${confirm,,}" in
+      s|S) break ;;  # '' aceita o valor padrão como 'S'
+      n|N) echo "Operação cancelada."; return 1 ;;
+      *) error_msg "Opção inválida. Digite S ou N." ;;
+    esac
+  done
+
+  # Atualizar pacotes e instalar cpulimit
+  echo -e "${YELLOW}Atualizando pacotes e instalando cpulimit...${NC}"
+  sleep 2
+  if ! sudo apt update && sudo apt install -y cpulimit; then
+    error_msg "Erro ao atualizar pacotes ou instalar o cpulimit."
+  fi
+
+  # Dar permissão de execução aos arquivos e copiá-los
+  echo -e "${YELLOW}Aplicando permissões e copiando arquivos...${NC}"
+  sleep 2
+  if ! sudo chmod +x -R dep/tec55/* && sudo cp -R dep/tec55/* /usr/local/bin; then
+    error_exit "Erro ao copiar os arquivos..."
+  fi
+
+  # Aplicar permissões adequadas ao diretório /opt/Gertec55
+  echo -e "${YELLOW}Aplicando permissões ao diretório /opt/Gertec55...${NC}"
+    if sudo chmod 777 -R /opt/Gertec55; then
+      echo -e "${GREEN}Permissões aplicadas com sucesso.${NC}"
+      sleep 2
+    else
+      error_exit "Erro ao aplicar permissões ao diretório /opt/Gertec55."
+    fi
+
+  # Mensagem de sucesso
+  echo -e "${GREEN}Configuração do limitador de consumo para o TEC55 realizada com sucesso.${NC}"
+  echo "Pressione Enter para continuar!"
+  read -p ""
+}
+
+# ------------------------------------
+
 # Instala VPN
 instalar_vpn() {
   echo -n -e "${YELLOW}Deseja instalar a VPN? (S/n): ${NC}"
