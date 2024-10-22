@@ -108,6 +108,13 @@ baixar_drive_mfe() {
 
 # Configura periféricos
 configurar_perifericos() {
+
+  # Função para exibir mensagens de erro e abortar a execução
+  error_exit() {
+    echo -e "${RED}$1${NC}" >&2
+    exit 1
+  }
+
   echo -n -e "${YELLOW}Deseja configurar os periféricos? (S/n): ${NC}"
   read confirm
   while [[ "$confirm" != "S" && "$confirm" != "N" && "$confirm" != "s" && "$confirm" != "n" ]]; do
@@ -119,13 +126,30 @@ configurar_perifericos() {
     if command -v subl &> /dev/null; then
       editor="subl"
     else
-      echo -e "${YELLOW}Sublime Text não encontrado. Utilizando o editor padrão (nano).${NC}"
+      error_exit "Sublime Text não encontrado. Utilizando o editor padrão (nano)."
       editor="nano"
     fi
 
-    if $editor /usr/local/bin/setty && $editor /etc/udev/rules.d/90-dispositivos-usb.rules; then
+    # Define variaveis para os arquivos setty e 90-dispositivos
+    setty=/usr/local/bin/setty
+    dispositivos-usb=/etc/udev/rules.d/90-dispositivos-usb.rules
+
+    if $editor $setty && $editor $dispositivos-usb; then
       echo -e "${GREEN}Arquivos abertos para configuração.${NC}"
       echo "Arquivo setty configura a porta serial. 90-dispositivos-usb.rules configura USB."
+      # Esperar que o usuário termine de configurar
+  	  echo -e "${YELLOW}Pressione Enter quando concluir a configuração.${NC}"
+  	  read -p ""
+
+  	  # Aplica permissão na pasta 
+	  if ! sudo chmod +x "$setty"; then
+	    error_exit "Erro ao aplicar permissão no arquivo $setty"
+	    sleep 3
+	  else
+	  	sudo setty
+	  fi
+
+
     else
       echo -e "${RED}Erro ao abrir os arquivos de configuração.${NC}"
     fi
@@ -179,8 +203,6 @@ configurar_docgate() {
   echo -e "Por favor, acesse o menu ${BOLD}(Ctrl+Alt+Espaço)${NC}, vá em: ${BOLD}\nDispositivos - Ativar Compartilhamento MFE/SAT${NC}\ne selecione ${BOLD}'Ativado'.${NC}\nPressione Enter para continuar..."
   read -p ""
 }
-
-# ----------------------------------------
 
 # Configura biometria
 configurar_biometria() {
@@ -239,8 +261,6 @@ configurar_biometria() {
   echo -e "${GREEN}Configuração da biometria realizada com sucesso!${NC}"
 
 }
-
-# ----------------------------------------
 
 # Instala VPN
 instalar_vpn() {
