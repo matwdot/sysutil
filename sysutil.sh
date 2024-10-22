@@ -38,16 +38,20 @@ show_menu() {
 
   clear
   echo "------------------------------------------"
-  echo -e "${BOLD}              SysUtil v5.2${NC}"
+  echo -e "${BOLD}               SysUtil v5.2${NC}"
   echo "------------------------------------------"
 
   for i in "${!options[@]}"; do
     if [[ $i -eq $highlight ]]; then
-      echo -e "${GREEN}> ${options[$i]}${NC}"
+        if [[ "${options[$i]}" == "Sair" ]]; then
+            echo -e "${RED}✘ ${options[$i]}${NC}"  # Sair em vermelho se for selecionado
+        else
+            echo -e "${GREEN}➜ ${options[$i]}${NC}"  # Opção em verde se for selecionada
+        fi
     else
       echo "  ${options[$i]}"
     fi
-  done
+done
 
   echo "------------------------------------------"
   echo -e "Navegue com ${BOLD}↑${NC}/${BOLD}↓${NC} e selecione com ${BOLD}Enter${NC}."
