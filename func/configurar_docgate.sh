@@ -31,15 +31,17 @@ configurar_docgate() {
     fi
 
     # Extrair o novo DocGate
-    info_msg "${BLUE}Extraindo o DocGate v5...${NC}"
+    info_msg "Extraindo o DocGate v5..."
     sudo tar -xf dep/docgateV5.tar.gz -C /opt || error_msg "Erro ao extrair o DocGate. Verifique o arquivo tar."
+
+    
+    # Abre o ultilitário do docgate
+    warning_msg "Abrindo ultilitário DocGate."
+    sudo -i /usr/local/bin/./docgate
 
     # Mensagem de sucesso e instruções
     success_msg "Instalação do DocGate v5 realizada com sucesso."
-
-    # AQUI EM VEZ DE PEDIR PARA O USUARIO ABRIR O APP
-    # ABRA VOCÊ MESMO PELO COMANDO
-    echo -e "Por favor, acesse o menu ${BOLD}(Ctrl+Alt+Espaço)${NC}, vá em: ${BOLD}\nDispositivos - Ativar Compartilhamento MFE/SAT${NC}\ne selecione ${BOLD}'Ativado'.${NC}\nPressione Enter para continuar..."
+    echo -e "Pressione Enter para continuar..."
     read -r -p ""
   else
     info_msg "Configuração do DocGate cancelado."
