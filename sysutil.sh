@@ -149,8 +149,7 @@ while true; do
     ;;
   8)
     clear
-    echo -e "${YELLOW}Transferência de Arquivos via SCP (dev) ainda não implementado.${NC}"
-    sleep 2
+    transferencia
     ;;
   9)
     clear

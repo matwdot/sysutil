@@ -24,6 +24,7 @@
 . func/baixar_build.sh
 . func/limitar_consumo.sh
 . func/requisitos.sh
+. func/transferencia.sh
 
 # Utilitários
 . func/utils/utilities.sh
