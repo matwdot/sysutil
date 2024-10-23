@@ -25,19 +25,10 @@ configurar_biometria() {
       sleep 2
     fi
 
-    # Verificar se o arquivo config.properties existe
-    CONFIG_FILE="/opt/ServidorBiometrico/config.properties"
-    if [[ ! -f "$CONFIG_FILE" ]]; then
-      error_msg "Arquivo config.properties não encontrado em /opt/ServidorBiometrico. Verifique a instalação."
-    fi
-
+    
     # Abrir o arquivo de configuração
-    info_msg "Abrindo o arquivo de configuração do servidor biométrico..."
-    sudo subl "$CONFIG_FILE" || error_msg "Erro ao abrir o arquivo de configuração."
-
-    # Esperar que o usuário termine de configurar
-    info_msg "Pressione ENTER ao concluir a configuração."
-    read -r -p ""
+    warning_msg "Abrindo o utilitário de configuração do servidor biométrico..."
+    sudo -i biometria
 
     # Executar o script e verificar se foi bem-sucedido
     info_msg "Inicializando o servidor biométrico..."
@@ -47,6 +38,10 @@ configurar_biometria() {
     else
       error_msg "Erro ao inicializar o servidor biométrico."
     fi
+
+    # Esperar que o usuário termine de configurar
+    info_msg "Pressione ENTER ao concluir a configuração."
+    read -r -p ""
   else
     info_msg "Configuração do Biometrico cancelado."
   fi
