@@ -36,6 +36,11 @@ info_msg() {
   echo -e "${BLUE}➜ $1${NC}"
 }
 
+# Mensagem solicitação
+print_msg() {
+  echo -e -n "${BLUE}➜ $1 ${NC}"
+}
+
 # Mensagem neutra
 bold_msg() {
   echo -e "{BOLD}$1${NC}"
