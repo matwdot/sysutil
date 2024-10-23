@@ -13,11 +13,19 @@
 #
 # *************************************************************
 
-# Cores
-# shellcheck disable=SC2034
-RED='\033[1;31m'
-GREEN='\033[1;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[1;34m'
-BOLD='\033[1m'
-NC='\033[0m'
+# Requisitos
+requisitos() {
+  echo "Verificando dependências..."
+  if ! command -v curl &>/dev/null; then
+    echo "Instalando curl"
+    sudo apt update && sudo apt install -y curl
+    if [ $? -eq 0 ]; then
+      echo "O curl foi instalado com sucesso."
+    else
+      echo "Falha na instalação do curl."
+      exit 1
+    fi
+  else
+    echo -e "${GREEN}dep: curl -> OK${NC}"
+  fi
+}
