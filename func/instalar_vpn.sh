@@ -1,38 +1,34 @@
 #!/bin/bash
-# ****************************************************************
-# Script de Instalação/Atualização do SysPDV PDV para Linux
+#
+# sysutil.sh - Script de utilitários para o SysPDV PDV em Linux
+#
 # Versão: 5.2
-# Desenvolvido por: Matheus Wesley
-# Contatos: https://matheuswesley.github.io/devlinks
+# Autor: Matheus Wesley
+# GitHub: https://matheuswesley.github.io/devlinks
+# GitHub Projeto: https://matwdot.github.
+# Licença: MIT
 #
-# ****************************************************************
-# Arquivo principal
+# Este script contém um conjunto de funções para instalação, atualização e
+# manutenção do sistema SysPDV PDV em ambientes Linux.
 #
-# ****************************************************************
+# **************************************************************
 
 # Instala VPN
 instalar_vpn() {
-  echo -n -e "${YELLOW}Deseja instalar a VPN? (S/n): ${NC}"
-  read confirm
-  while [[ "$confirm" != "S" && "$confirm" != "N" && "$confirm" != "s" && "$confirm" != "n" ]]; do
-    echo -n -e "${RED}Opção inválida. (S = Sim | N = Não): ${NC}"
-    read confirm
-  done
 
-  if [[ "$confirm" =~ [sS] ]]; then
-    echo "Iniciando a instalação da VPN..."
+  if confirm_action "Deseja instalar a VPN?"; then
+    info_msg "Iniciando a instalação da VPN..."
     if ! sudo ./dep/wnbinstall.sh -i; then
-      echo -e "${RED}Erro ao instalar a VPN. Verifique permissões e tente novamente.${NC}"
+      error_msg "Erro ao instalar a VPN. Verifique permissões e tente novamente."
       sleep 2
     else
-      echo -n -e "${GREEN}Informe a chave da VPN: ${NC}"
-      read key
+      info_msg "Informe a chave da VPN: "
+      read -r key
       sudo wnbmonitor -k "$key" && sudo wnbmonitor -r
       sleep 2
-      echo -e "${GREEN}VPN instalada com sucesso!${NC}"
+      success_msg "VPN instalada com sucesso!"
     fi
   else
-    echo -e "${RED}Configuração da VPN cancelada.${NC}"
-    sleep 2
+    info_msg "Configuração da VPN cancelada."
   fi
 }
