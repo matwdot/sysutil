@@ -52,6 +52,8 @@ transferencia() {
     # Realizar a transferência de arquivos
     if scp -r "root@$host:$file" "$dir_local"; then
       success_msg "Cópia do arquivo/pasta '$file' realizada com sucesso."
+      info_msg "Pressione ENTER para continuar..."
+      read -r -p ""
     else
       error_msg "Erro ao realizar a cópia do arquivo/pasta '$file'."
     fi
