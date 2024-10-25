@@ -25,8 +25,6 @@
 # Menu principal
 # ---------------------
 
-create_alias
-
 # shellcheck disable=SC2162
 # Função para capturar entrada do teclado
 get_input() {

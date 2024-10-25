@@ -36,3 +36,6 @@ create_alias() {
     source ~/.bashrc
   fi
 }
+
+# Executar função
+create_alias
