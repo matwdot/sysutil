@@ -19,10 +19,13 @@
 # shellcheck disable=SC1091
 . ./functions.sh
 . ./colors.sh
+. ./func/utils/create_alias.sh
 
 # ---------------------
 # Menu principal
 # ---------------------
+
+create_alias
 
 # shellcheck disable=SC2162
 # Função para capturar entrada do teclado
