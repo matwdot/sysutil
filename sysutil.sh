@@ -103,7 +103,7 @@ options=(
   "Configurar DocGate"
   "Configurar Biométrico"
   "Limitar Consumo Tec55"
-  "Transferência de Arquivos via SCP (dev)"
+  "Transferência de Arquivos via SCP"
   "Sair"
 )
 

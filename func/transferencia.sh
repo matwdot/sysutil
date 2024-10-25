@@ -28,15 +28,17 @@ transferencia() {
     # Verificar se o host foi informado
     if [[ -z "$host" ]]; then
       error_msg "Erro: o IP do Host não foi informado."
+      sleep 2
       return 1
     fi
 
-    print_msg "Informe a pasta ou arquivo que deseja copiar (ex: /opt/Syspdv/TefDll):"
+    print_msg "Informe a pasta ou arquivo que deseja copiar (ex: /opt/Syspdv/TefDll)  :"
     read -r file
 
     # Verificar se o arquivo/pasta foi informado
     if [[ -z "$file" ]]; then
       error_msg "Erro: a pasta ou arquivo não foi informado."
+      sleep 2
       return 1
     fi
 
@@ -46,6 +48,7 @@ transferencia() {
     # Verificar se o diretório local foi informado
     if [[ -z "$dir_local" ]]; then
       error_msg "Erro: o diretório local não foi informado."
+      sleep 2
       return 1
     fi
 
@@ -56,6 +59,7 @@ transferencia() {
       read -r -p ""
     else
       error_msg "Erro ao realizar a cópia do arquivo/pasta '$file'."
+      sleep 2
     fi
   else
     info_msg "Transferência de arquivos cancelada."
