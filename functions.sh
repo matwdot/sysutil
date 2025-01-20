@@ -17,7 +17,9 @@
 # shellcheck disable=SC1091
 
 . func/instalar_vpn.sh
+. func/remover_vpn.sh
 . func/baixar_drive_mfe.sh
+. func/remover_drive_mfe.sh
 . func/configurar_perifericos.sh
 . func/configurar_docgate.sh
 . func/configurar_biometria.sh
