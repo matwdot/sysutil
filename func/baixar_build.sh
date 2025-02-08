@@ -31,6 +31,7 @@ baixar_build() {
 
   if curl --progress-bar --location --fail --output "$ARQUIVO" "$URL"; then
     success_msg "A BUILD $build foi baixada com sucesso."
+    notify-send "SysUtil" "Build $build baixada com sucesso!!"
     warning_msg "Iniciando instalação..."
 
     chmod +x "$ARQUIVO"
