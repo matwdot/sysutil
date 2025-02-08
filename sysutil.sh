@@ -21,9 +21,9 @@
 # Função para capturar entrada do teclado
 # ---------------------
 get_input() {
-  read -s -n 1 key               
-  if [[ $key == $'\x1b' ]]; then 
-    read -s -n 2 key             
+  read -s -n 1 key
+  if [[ $key == $'\x1b' ]]; then
+    read -s -n 2 key
   fi
   echo "$key"
 }
@@ -62,7 +62,10 @@ navigate_menu() {
     '[A') ((current_selection > 0)) && ((current_selection--)) ;;
     '[B') ((current_selection < ${#options[@]} - 1)) && ((current_selection++)) ;;
     '') return $current_selection ;;
-    '0' | 'q') clear; exit 0 ;;
+    '0' | 'q')
+      clear
+      exit 0
+      ;;
     esac
   done
 }
@@ -77,8 +80,16 @@ menu_syspdv() {
   while true; do
     navigate_menu "${syspdv_options[@]}"
     case $? in
-    0) clear; instalar_syspdv; echo -e "${GREEN}Instalação concluída!${NC}" ;;
-    1) clear; atualizar_syspdv; echo -e "${GREEN}Atualização concluída!${NC}" ;;
+    0)
+      clear
+      instalar_syspdv
+      echo -e "${GREEN}Instalação concluída!${NC}"
+      ;;
+    1)
+      clear
+      atualizar_syspdv
+      echo -e "${GREEN}Atualização concluída!${NC}"
+      ;;
     2) return ;;
     esac
   done
@@ -94,8 +105,16 @@ menu_vpn() {
   while true; do
     navigate_menu "${vpn_options[@]}"
     case $? in
-    0) clear; instalar_vpn; echo -e "${GREEN}VPN instalada com sucesso!${NC}" ;;
-    1) clear; remover_vpn; echo -e "${GREEN}VPN removida com sucesso!${NC}" ;;
+    0)
+      clear
+      instalar_vpn
+      echo -e "${GREEN}VPN instalada com sucesso!${NC}"
+      ;;
+    1)
+      clear
+      remover_vpn
+      echo -e "${GREEN}VPN removida com sucesso!${NC}"
+      ;;
     2) return ;;
     esac
   done
@@ -112,9 +131,21 @@ menu_mfe() {
   while true; do
     navigate_menu "${mfe_options[@]}"
     case $? in
-    0) clear; baixar_drive_mfe; echo -e "${GREEN}MFe instalado com sucesso!${NC}" ;;
-    1) clear; remover_drive_mfe; echo -e "${GREEN}MFe removido com sucesso!${NC}" ;;
-    2) clear; configurar_docgate; echo -e "${GREEN}DocGate configurado com sucesso!${NC}" ;;
+    0)
+      clear
+      baixar_drive_mfe
+      echo -e "${GREEN}MFe instalado com sucesso!${NC}"
+      ;;
+    1)
+      clear
+      remover_drive_mfe
+      echo -e "${GREEN}MFe removido com sucesso!${NC}"
+      ;;
+    2)
+      clear
+      configurar_docgate
+      echo -e "${GREEN}DocGate configurado com sucesso!${NC}"
+      ;;
     3) return ;;
     esac
   done
@@ -138,11 +169,30 @@ while true; do
   0) menu_syspdv ;;
   1) menu_vpn ;;
   2) menu_mfe ;;
-  3) clear; configurar_perifericos ;;
-  4) clear; configurar_biometria ;;
-  5) clear; limitar_consumo ;;
-  6) clear; transferencia ;;
-  7) clear; exit 0 ;;
-  *) echo -e "${RED}Opção inválida!${NC}"; sleep 1; clear ;;
+  3)
+    clear
+    configurar_perifericos
+    ;;
+  4)
+    clear
+    configurar_biometria
+    ;;
+  5)
+    clear
+    limitar_consumo
+    ;;
+  6)
+    clear
+    transferencia
+    ;;
+  7)
+    clear
+    exit 0
+    ;;
+  *)
+    echo -e "${RED}Opção inválida!${NC}"
+    sleep 1
+    clear
+    ;;
   esac
-  done
+done
