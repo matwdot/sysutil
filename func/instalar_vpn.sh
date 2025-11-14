@@ -20,10 +20,10 @@ instalar_vpn() {
     if confirm_action "Utiliza a versão 18.04?"; then
       # Logica versão 18.04
       info_msg "Iniciando a instalação da VPN para versão 18.04..."
-      if ! sudo chmod +x ./dep/wnbtlscli_2_5_1/wnbtlscli_2.5.1_i386.deb; then
+      if sudo chmod +x dep/wnbtlscli_2_5_1/wnbtlscli_2.5.1_i386.deb; then
         info_msg "Aplicando permissões ao arquivo."
         sleep 2
-        if ! sudo dpkg -i /dep/wnbtlscli_2_5_1/wnbtlscli_2.5.1_i386.deb; then
+        if ! sudo dpkg -i dep/wnbtlscli_2_5_1/wnbtlscli_2.5.1_i386.deb; then
           error_msg "Erro ao instalar a VPN. Verifique permissões e tente novamente."
           sleep 2
         else
@@ -34,7 +34,8 @@ instalar_vpn() {
           success_msg "VPN instalada com sucesso!"
         fi
       else
-
+        success_msg "Chegamos aqui..."
+        sleep 2
       fi
     else
       # Logica versão 22.04 ou superior
