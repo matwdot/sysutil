@@ -27,6 +27,7 @@
 . func/limitar_consumo.sh
 . func/requisitos.sh
 . func/transferencia.sh
+. func/fazer_backup_fdb.sh
 
 # Utilitários
 . func/utils/utilities.sh
@@ -51,6 +52,7 @@ instalar_syspdv() {
 atualizar_syspdv() {
   if confirm_action "Deseja atualizar o SysPDV PDV?"; then
     info_msg "Iniciando a atualização do SysPDV"
+    fazer_backup_fdb
     baixar_build
   else
     error_msg "Instalação cancelada."
