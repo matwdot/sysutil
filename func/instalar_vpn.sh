@@ -17,16 +17,32 @@
 instalar_vpn() {
 
   if confirm_action "Deseja instalar a VPN?"; then
-    info_msg "Iniciando a instalação da VPN..."
-    if ! sudo ./dep/wnbinstall.sh -i; then
-      error_msg "Erro ao instalar a VPN. Verifique permissões e tente novamente."
-      sleep 2
+    if confirm_action "Utiliza a versão 18.04?"; then
+      # Logica versão 18.04
+      info_msg "Iniciando a instalação da VPN para versão 18.04..."
+      if ! sudo dpkg -i /dep/wnbtlscli_2_5_1/wnbtlscli_2.5.1_i386.deb; then
+        error_msg "Erro ao instalar a VPN. Verifique permissões e tente novamente."
+        sleep 2
+      else
+        info_msg "Informe a chave da VPN: "
+        read -r key
+        sudo wnbmonitor -k "$key" && sudo wnbmonitor -r
+        sleep 2
+        success_msg "VPN instalada com sucesso!"
+      fi
     else
-      info_msg "Informe a chave da VPN: "
-      read -r key
-      sudo wnbmonitor -k "$key" && sudo wnbmonitor -r
-      sleep 2
-      success_msg "VPN instalada com sucesso!"
+      # Logica versão 22.04 ou superior
+      info_msg "Iniciando a instalação da VPN para versão 22.04 ou superior..."
+      if ! sudo ./dep/wnbinstall.sh -i; then
+        error_msg "Erro ao instalar a VPN. Verifique permissões e tente novamente."
+        sleep 2
+      else
+        info_msg "Informe a chave da VPN: "
+        read -r key
+        sudo wnbmonitor -k "$key" && sudo wnbmonitor -r
+        sleep 2
+        success_msg "VPN instalada com sucesso!"
+      fi
     fi
   else
     info_msg "Configuração da VPN cancelada."

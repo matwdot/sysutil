@@ -1,0 +1,18 @@
+Os pacotes seguem as homologações abaixo
+
+	wnbtlscli_2.5.X_armhf.deb  
+	wnbtlscli_2.5.X_i386.deb
+		
+		Os pacotes acima foram homologados apenas em Debian >= 9.0 
+	
+	
+	wnbtlscli_2.5.X_amd64.deb
+	
+		Os pacotes acima foram homologados apenas em Debian >= 9.0 e seus derivados 
+		como ( ubuntu , mint ..etc quando criados proximo a data de lançamento do debian 9 , versões anteriores não foram homologadas) 
+	
+	wnbtlscli_2.5.X_X_amd64.rpm
+		
+		Os pacotes acima foram homologados para Fedora >=37 , RedHat >= 9.0 ou Centos >= 9.0 
+		Para estes pacotes sempre execute  o comando rpm -i --force wnbtlscli_2.5.X_X_amd64.rpm para efetuar a instalação
+		
