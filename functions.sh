@@ -32,6 +32,7 @@
 
 # Utilitários
 . func/utils/utilities.sh
+. func/utils/menu_system.sh
 
 # FUNÇÕES
 

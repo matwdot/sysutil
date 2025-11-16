@@ -54,7 +54,9 @@ confirm_action() {
   while true; do
     echo -n -e "${YELLOW}${message} (S/n): ${NC}"
     read -r confirm
-    case "${confirm,,}" in
+    # Converte para minúsculas de forma compatível
+    confirm=$(echo "$confirm" | tr '[:upper:]' '[:lower:]')
+    case "$confirm" in
     s) return 0 ;;
     n)
       echo "Operação cancelada."
@@ -63,4 +65,12 @@ confirm_action() {
     *) error_msg "Opção inválida. Digite S ou N." ;;
     esac
   done
+}
+
+# ---------------------
+# Função de saída
+# ---------------------
+exit_script() {
+  clear
+  exit 0
 }
