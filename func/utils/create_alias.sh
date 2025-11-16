@@ -48,4 +48,4 @@ create_alias() {
 
 
 # Executar função
-create_alias
+# create_alias

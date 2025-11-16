@@ -29,12 +29,12 @@ instalar_vpn() {
         else
           info_msg "Informe a chave da VPN: "
           read -r key
-          sudo wnbmonitor -k "$key" && sudo wnbmonitor -r
+          sudo wnbupdate -k "$key" && sudo wnbmonitor -r
           sleep 2
           success_msg "VPN instalada com sucesso!"
         fi
       else
-        success_msg "Chegamos aqui..."
+        error_msg "Erro ao aplicar permissão..."
         sleep 2
       fi
     else
