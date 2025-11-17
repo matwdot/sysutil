@@ -19,7 +19,7 @@ baixar_build() {
   URL="https://objectstorage.us-ashburn-1.oraclecloud.com/n/casamagalhaes/b/syspdv/o/b$build/InstaladorSysPDV19_0_0_$build.exe"
 
   if ! [[ $URL =~ ^https://.* ]]; then
-    echo -e "${RED}URL inválida.${NC}"
+    error_msg "URL inválida."
     return 1
   fi
 
@@ -31,7 +31,7 @@ baixar_build() {
 
   if curl --progress-bar --location --fail --output "$ARQUIVO" "$URL"; then
     success_msg "A BUILD $build foi baixada com sucesso."
-    notify-send "SysUtil" "Build $build baixada com sucesso!!"
+    # notify-send "SysUtil" "Build $build baixada com sucesso!!"
     warning_msg "Iniciando instalação..."
 
     chmod +x "$ARQUIVO"

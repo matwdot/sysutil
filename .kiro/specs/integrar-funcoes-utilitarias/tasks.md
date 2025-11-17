@@ -6,13 +6,24 @@
   - Documentar padrão de import a ser usado em todos os scripts
   - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5_
 
-- [ ] 2. Implementar integração em db.sh (script de teste)
-  - [ ] 2.1 Adicionar import de utilities.sh no início do arquivo
+- [-] 2. Implementar integração em db.sh (script de teste)
+
+
+
+
+  - [x] 2.1 Adicionar import de utilities.sh no início do arquivo
+
+
+
+
     - Implementar padrão de import com verificação de função carregada
     - Adicionar fallback caso utilities.sh não carregue
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5_
   
   - [ ] 2.2 Implementar função básica db_access com utilities
+
+
+
     - Substituir info_msg existente por versão do utilities
     - Adicionar mensagens de erro e sucesso apropriadas
     - Adicionar log de acesso ao banco

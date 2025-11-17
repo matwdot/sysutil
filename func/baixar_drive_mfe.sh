@@ -91,6 +91,6 @@ baixar_drive_mfe() {
       rm -f "$ARQUIVO"
     fi
   else
-    echo "Instalação do Drive MFe cancelada"
+    error_msg "Instalação do Drive MFe cancelada"
   fi
 }
