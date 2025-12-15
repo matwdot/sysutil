@@ -41,7 +41,7 @@ configurar_docgate() {
 
     # Mensagem de sucesso e instruções
     success_msg "Instalação do DocGate v5 realizada com sucesso."
-    echo -e "Pressione Enter para continuar..."
+    bold_msg -e "Pressione Enter para continuar..."
     read -r -p ""
   else
     info_msg "Configuração do DocGate cancelado."

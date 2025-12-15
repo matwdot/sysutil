@@ -5,217 +5,77 @@
 # Versão: 7.0
 # Autor: Matheus Wesley
 # GitHub: https://matheuswesley.github.io/devlinks
-# GitHub Projeto: https://matwdot.github.
+# GitHub Projeto: https://matwdot.github.io
 # Licença: MIT
 #
 # *************************************************************
+
 # ---------------------
 # Importações
 # ---------------------
-. ./functions.sh
 . ./colors.sh
-. ./func/utils/create_alias.sh
+. ./functions.sh
 
 # ---------------------
 # Verificar se fzf está instalado
 # ---------------------
 HAS_FZF=false
-if command -v fzf &> /dev/null; then
-  HAS_FZF=true
-fi
+command -v fzf &> /dev/null && HAS_FZF=true
 
 # ---------------------
-# Função para capturar entrada do teclado (método tradicional)
-# ---------------------
-get_input() {
-  read -s -n 1 key
-  if [[ $key == $'\x1b' ]]; then
-    read -s -n 2 key
-  fi
-  echo "$key"
-}
-
-# Função de exibição do menu interativo (método tradicional)
-show_menu() {
-  local highlight=$1
-  shift
-  local options=("$@")
-  clear
-  echo "------------------------------------------"
-  echo -e "${BOLD}           SysUtil v7.0 beta${NC}"
-  echo "------------------------------------------"
-  for i in "${!options[@]}"; do
-    if [[ $i -eq $highlight ]]; then
-      [[ "${options[$i]}" == "Sair" ]] && echo -e "${RED}✘ ${options[$i]}${NC}" || echo -e "${GREEN}➜ ${options[$i]}${NC}"
-    else
-      echo "  ${options[$i]}"
-    fi
-  done
-  echo "------------------------------------------"
-  echo -e "Navegue com ${BOLD}↑${NC}/${BOLD}↓${NC} e selecione com ${BOLD}Enter${NC}."
-  echo "------------------------------------------"
-}
-
-navigate_menu() {
-  local options=("$@")
-  local current_selection=0
-  while true; do
-    show_menu "$current_selection" "${options[@]}"
-    case $(get_input) in
-    '[A') ((current_selection > 0)) && ((current_selection--)) ;;
-    '[B') ((current_selection < ${#options[@]} - 1)) && ((current_selection++)) ;;
-    '') return $current_selection ;;
-    '0' | 'q')
-      clear
-      exit 0
-      ;;
-    esac
-  done
-}
-
-# ---------------------
-# Função de menu com fzf
-# ---------------------
-fzf_menu() {
-
-   clear
-
-  local title=$1
-  shift
-  local options=("$@")
-  
-  local selected=$(printf '%s\n' "${options[@]}" | fzf \
-    --prompt="» " \
-    --style full \
-    --border=rounded \
-    --margin=1 \
-    --padding=1 \
-    --reverse \
-    --header="Digite para pesquisar | ESC para sair")
-  
-  # Retorna o índice da opção selecionada
-  for i in "${!options[@]}"; do
-    if [[ "${options[$i]}" == "$selected" ]]; then
-      return $i
-    fi
-  done
-  
-  # Se ESC foi pressionado, retorna código especial
-  return 255
-}
-
-# Wrapper para escolher método de menu
-select_menu() {
-  if $HAS_FZF; then
-    fzf_menu "$@"
-  else
-    shift  # Remove o título (não usado no menu tradicional)
-    navigate_menu "$@"
-  fi
-}
-
-# ---------------------
-# Função para menu de SysPDV PDV
+# Menu de SysPDV PDV
 # ---------------------
 menu_syspdv() {
-  local syspdv_options=(
+  local options=(
     "Instalar SysPDV PDV"
     "Atualizar SysPDV PDV"
     "Voltar"
   )
-  while true; do
-    select_menu "SysPDV PDV" "${syspdv_options[@]}"
-    local result=$?
-    
-    # Se ESC no fzf ou escolheu Voltar
-    [[ $result -eq 255 || $result -eq 2 ]] && return
-    
-    case $result in
-    0)
-      clear
-      instalar_syspdv
-      echo -e "${GREEN}Instalação concluída!${NC}"
-      read -p "Pressione Enter para continuar..."
-      ;;
-    1)
-      clear
-      atualizar_syspdv
-      echo -e "${GREEN}Atualização concluída!${NC}"
-      read -p "Pressione Enter para continuar..."
-      ;;
-    esac
-  done
+  
+  local functions=(
+    "instalar_syspdv"
+    "atualizar_syspdv"
+  )
+  
+  submenu "SysPDV PDV" "${options[@]}" -- "${functions[@]}"
 }
 
 # ---------------------
-# Função para menu de VPN
+# Menu de VPN
 # ---------------------
 menu_vpn() {
-  local vpn_options=(
+  local options=(
     "Instalar VPN"
     "Remover VPN"
     "Voltar"
   )
-  while true; do
-    select_menu "VPN Comnect" "${vpn_options[@]}"
-    local result=$?
-    
-    [[ $result -eq 255 || $result -eq 2 ]] && return
-    
-    case $result in
-    0)
-      clear
-      instalar_vpn
-      echo -e "${GREEN}VPN instalada com sucesso!${NC}"
-      read -p "Pressione Enter para continuar..."
-      ;;
-    1)
-      clear
-      remover_vpn
-      echo -e "${GREEN}VPN removida com sucesso!${NC}"
-      read -p "Pressione Enter para continuar..."
-      ;;
-    esac
-  done
+  
+  local functions=(
+    "instalar_vpn"
+    "remover_vpn"
+  )
+  
+  submenu "VPN Comnect" "${options[@]}" -- "${functions[@]}"
 }
 
 # ---------------------
-# Função para menu de MFe
+# Menu de MFe
 # ---------------------
 menu_mfe() {
-  local mfe_options=(
+  local options=(
     "Instalar Driver MFe"
     "Remover Driver MFe"
     "Configurar DocGate"
     "Voltar"
   )
-  while true; do
-    select_menu "MFe/DocGate" "${mfe_options[@]}"
-    local result=$?
-    
-    [[ $result -eq 255 || $result -eq 3 ]] && return
-    
-    case $result in
-    0)
-      clear
-      baixar_drive_mfe
-      echo -e "${GREEN}MFe instalado com sucesso!${NC}"
-      read -p "Pressione Enter para continuar..."
-      ;;
-    1)
-      clear
-      remover_drive_mfe
-      echo -e "${GREEN}MFe removido com sucesso!${NC}"
-      read -p "Pressione Enter para continuar..."
-      ;;
-    2)
-      clear
-      configurar_docgate
-      echo -e "${GREEN}DocGate configurado com sucesso!${NC}"
-      read -p "Pressione Enter para continuar..."
-      ;;
-    esac
-  done
+  
+  local functions=(
+    "baixar_drive_mfe"
+    "remover_drive_mfe"
+    "configurar_docgate"
+  )
+  
+  submenu "MFe/DocGate" "${options[@]}" -- "${functions[@]}"
 }
 
 # ---------------------
@@ -234,52 +94,50 @@ main() {
     "Sair"
   )
   
+  local functions=(
+    "menu_syspdv"
+    "menu_vpn"
+    "menu_mfe"
+    "configurar_perifericos"
+    "configurar_biometria"
+    "limitar_consumo"
+    "transferencia"
+    "db_access"
+    "exit_script"
+  )
+  
+  local exit_index=$((${#options[@]} - 1))
+  
   while true; do
-    select_menu "SysUtil v6.0 beta" "${options[@]}"
+    select_menu "SysUtil v7.0 beta" "${options[@]}"
     local result=$?
     
     # Se ESC no fzf ou escolheu Sair
-    if [[ $result -eq 255 || $result -eq 8 ]]; then
+    if [[ $result -eq 255 || $result -eq $exit_index ]]; then
       clear
       exit 0
     fi
     
-    case $result in
-    0) menu_syspdv ;;
-    1) menu_vpn ;;
-    2) menu_mfe ;;
-    3)
-      clear
-      configurar_perifericos
-      read -p "Pressione Enter para continuar..."
-      ;;
-    4)
-      clear
-      configurar_biometria
-      read -p "Pressione Enter para continuar..."
-      ;;
-    5)
-      clear
-      limitar_consumo
-      read -p "Pressione Enter para continuar..."
-      ;;
-    6)
-      clear
-      transferencia
-      read -p "Pressione Enter para continuar..."
-      ;;
-    7)
-      clear
-      db_access
-      read -p "Pressione Enter para continuar..."
-      ;;
-    *)
+    # Verifica se o índice é válido
+    if [[ $result -ge 0 && $result -lt ${#functions[@]} ]]; then
+      local func="${functions[$result]}"
+      
+      # Funções de submenu não precisam de clear/pause
+      if [[ "$func" == menu_* ]]; then
+        $func
+      else
+        clear
+        $func
+        read -p "Pressione Enter para continuar..."
+      fi
+    else
       echo -e "${RED}Opção inválida!${NC}"
       sleep 1
-      ;;
-    esac
+    fi
   done
 }
 
+# ---------------------
 # Executa o menu principal
+# ---------------------
 main

@@ -43,6 +43,6 @@ configurar_biometria() {
     info_msg "Pressione ENTER ao concluir a configuração."
     read -r -p ""
   else
-    info_msg "Configuração do Biometrico cancelado."
+    error_msg "Configuração do Biometrico cancelado."
   fi
 }

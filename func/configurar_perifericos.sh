@@ -31,7 +31,7 @@ configurar_perifericos() {
     dispositivos=/etc/udev/rules.d/90-dispositivos-usb.rules
 
     if $editor $setty && $editor $dispositivos; then
-      echo -e "Abrindo: setty e 90-dispositivos-usb.rules"
+      info_msg "Abrindo: setty e 90-dispositivos-usb.rules"
 
       # Esperar que o usuário termine de configurar
       info_msg "${YELLOW}Pressione Enter quando concluir a configuração.${NC}"
