@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # SysUtil - Script de Instalação Rápida
-# Uso: curl -fsSL https://matwdot.github.io/sysutil/install.sh | bash
+# Uso: curl -fsSL https://raw.githubusercontent.com/matwdot/sysutil/master/install.sh | bash
 #
 # Versão: 6.0
 # Autor: Matheus Wesley

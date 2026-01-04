@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # SysUtil - Script de Atualização
-# Uso: curl -fsSL https://matwdot.github.io/sysutil/update.sh | bash
+# Uso: curl -fsSL https://raw.githubusercontent.com/matwdot/sysutil/master/update.sh | bash
 #
 
 set -e
