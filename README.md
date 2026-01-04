@@ -4,14 +4,19 @@ Script de utilitários para configuração e manutenção do SysPDV PDV em siste
 
 ## 🚀 Instalação Rápida
 
-### Instalar e Executar (Uma linha)
-```bash
-curl -fsSL https://raw.githubusercontent.com/matwdot/sysutil/master/run.sh | bash
-```
-
-### Apenas Instalar
+### Apenas Instalar (Recomendado)
 ```bash
 curl -fsSL https://raw.githubusercontent.com/matwdot/sysutil/master/install.sh | bash
+```
+
+### Instalar e Executar Automaticamente
+```bash
+curl -fsSL https://raw.githubusercontent.com/matwdot/sysutil/master/quick-run.sh | bash
+```
+
+### Atualizar Instalação Existente
+```bash
+curl -fsSL https://raw.githubusercontent.com/matwdot/sysutil/master/update.sh | bash
 ```
 
 ### Executar Localmente

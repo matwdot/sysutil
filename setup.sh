@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# SysUtil - Script de Instalação
+# SysUtil - Script de Instalação Rápida
 # Uso: curl -fsSL https://raw.githubusercontent.com/matwdot/sysutil/master/install.sh | bash
 #
 # Versão: 6.0
@@ -89,32 +89,24 @@ install_sysutil() {
     cp -r . "$INSTALL_DIR/"
     
     # Tornar scripts executáveis
-    log "Configurando permissões..."
     find "$INSTALL_DIR" -name "*.sh" -exec chmod +x {} \;
-    chmod +x "$INSTALL_DIR/sysutil" 2>/dev/null || true
+    chmod +x "$INSTALL_DIR/sysutil"
     
     # Criar link simbólico para execução global
-    log "Criando link simbólico..."
-    if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-        # Linux - tentar criar link, usar sudo se necessário
-        if ! ln -sf "$INSTALL_DIR/sysutil.sh" "/usr/local/bin/sysutil" 2>/dev/null; then
-            if sudo ln -sf "$INSTALL_DIR/sysutil.sh" "/usr/local/bin/sysutil" 2>/dev/null; then
-                log "Link simbólico criado em /usr/local/bin/sysutil (com sudo)"
-            else
+    if [[ -w "/usr/local/bin" ]] || [[ "$OSTYPE" == "darwin"* ]]; then
+        if [[ "$OSTYPE" == "darwin"* ]]; then
+            # No macOS, usar sudo se necessário
+            sudo ln -sf "$INSTALL_DIR/sysutil.sh" "/usr/local/bin/sysutil" 2>/dev/null || {
                 warning "Não foi possível criar link em /usr/local/bin"
                 log "Execute manualmente: sudo ln -sf $INSTALL_DIR/sysutil.sh /usr/local/bin/sysutil"
-            fi
+            }
         else
-            log "Link simbólico criado em /usr/local/bin/sysutil"
+            ln -sf "$INSTALL_DIR/sysutil.sh" "/usr/local/bin/sysutil"
         fi
-    elif [[ "$OSTYPE" == "darwin"* ]]; then
-        # macOS
-        if ! ln -sf "$INSTALL_DIR/sysutil.sh" "/usr/local/bin/sysutil" 2>/dev/null; then
-            warning "Não foi possível criar link em /usr/local/bin"
-            log "Execute manualmente: sudo ln -sf $INSTALL_DIR/sysutil.sh /usr/local/bin/sysutil"
-        else
-            log "Link simbólico criado em /usr/local/bin/sysutil"
-        fi
+        log "Link simbólico criado em /usr/local/bin/sysutil"
+    else
+        warning "Não foi possível criar link em /usr/local/bin (sem permissão)"
+        log "Execute manualmente: sudo ln -sf $INSTALL_DIR/sysutil.sh /usr/local/bin/sysutil"
     fi
     
     # Limpar arquivos temporários
@@ -122,6 +114,7 @@ install_sysutil() {
     rm -rf "$TEMP_DIR"
     
     log "Instalação concluída com sucesso!"
+    log "Execute 'sysutil' ou '$INSTALL_DIR/sysutil.sh' para iniciar"
 }
 
 # Função principal
@@ -145,8 +138,6 @@ main() {
     echo ""
     echo "Ou execute diretamente:"
     echo -e "${BOLD}  $INSTALL_DIR/sysutil.sh${NC}"
-    echo ""
-    echo -e "${YELLOW}Nota: Alguns recursos podem precisar de sudo${NC}"
 }
 
 # Executar instalação
