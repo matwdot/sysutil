@@ -2,6 +2,7 @@
 #
 # SysUtil - Execução Rápida
 # Uso: curl -fsSL https://raw.githubusercontent.com/matwdot/sysutil/master/run.sh | bash
+# Versão: 1.1
 #
 
 set -e
