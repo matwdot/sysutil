@@ -1,0 +1,70 @@
+# SysUtil v6.0
+
+Script de utilitários para configuração e manutenção do SysPDV PDV em sistemas Linux.
+
+## 🚀 Instalação Rápida
+
+### Instalar e Executar (Uma linha)
+```bash
+curl -fsSL https://matwdot.github.io/sysutil/run.sh | bash
+```
+
+### Apenas Instalar
+```bash
+curl -fsSL https://matwdot.github.io/sysutil/install.sh | bash
+```
+
+### Executar Localmente
+Após a instalação, você pode executar:
+```bash
+sysutil
+```
+
+Ou diretamente:
+```bash
+~/sysutil/sysutil.sh
+```
+
+## 📋 Funcionalidades
+
+- **SysPDV PDV**: Instalação e atualização
+- **VPN Connect**: Configuração de VPN
+- **MFe/DocGate**: Drivers e configurações para MFe
+- **Periféricos**: Configuração de dispositivos
+- **Biométrico**: Configuração de leitores biométricos
+- **Limitação de Consumo**: Para sistemas Tec55
+- **Transferência SCP**: Transferência segura de arquivos
+
+## 🛠️ Desenvolvimento
+
+### Estrutura do Projeto
+```
+sysutil/
+├── sysutil.sh          # Script principal
+├── functions.sh        # Funções auxiliares
+├── colors.sh          # Definições de cores
+├── install.sh         # Script de instalação
+├── run.sh            # Script de execução rápida
+├── func/             # Módulos funcionais
+│   ├── utils/        # Utilitários
+│   └── *.sh         # Scripts específicos
+└── dep/             # Dependências
+```
+
+### Executar Localmente
+```bash
+git clone https://github.com/matwdot/sysutil.git
+cd sysutil
+chmod +x sysutil.sh
+./sysutil.sh
+```
+
+## 📝 Licença
+
+MIT License - veja o arquivo LICENSE para detalhes.
+
+## 👨‍💻 Autor
+
+**Matheus Wesley**
+- GitHub: [@matwdot](https://github.com/matwdot)
+- Links: [matheuswesley.github.io/devlinks](https://matheuswesley.github.io/devlinks)
