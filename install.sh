@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# SysUtil - Instalador Simplificado
+# SysUtil - Instalador e Executor
 # Uso: curl -fsSL https://raw.githubusercontent.com/matwdot/sysutil/master/install.sh | bash
 #
 
@@ -19,7 +19,7 @@ INSTALL_DIR="$HOME/sysutil"
 echo -e "${BOLD}${BLUE}SysUtil - Instalador v6.0${NC}"
 echo "=================================="
 
-# Verificar dependências básicas
+# Verificar se git está instalado
 if ! command -v git >/dev/null 2>&1; then
     echo -e "${RED}Erro: Git não encontrado${NC}"
     echo "Instale o git primeiro:"
@@ -29,14 +29,14 @@ if ! command -v git >/dev/null 2>&1; then
     exit 1
 fi
 
-# Remover instalação anterior
+# Verificar se existe instalação anterior e remover
 if [ -d "$INSTALL_DIR" ]; then
     echo -e "${YELLOW}Removendo instalação anterior...${NC}"
     rm -rf "$INSTALL_DIR"
 fi
 
-# Clonar repositório
-echo -e "${GREEN}Baixando SysUtil...${NC}"
+# Baixar a versão mais recente
+echo -e "${GREEN}Baixando SysUtil mais recente...${NC}"
 git clone https://github.com/matwdot/sysutil.git "$INSTALL_DIR"
 
 # Configurar permissões
@@ -55,9 +55,8 @@ fi
 
 echo ""
 echo -e "${BOLD}${GREEN}✓ Instalação concluída!${NC}"
+echo -e "${BOLD}${BLUE}Iniciando SysUtil...${NC}"
 echo ""
-echo "Para executar:"
-echo -e "  ${BOLD}sysutil${NC}"
-echo ""
-echo "Ou diretamente:"
-echo -e "  ${BOLD}$INSTALL_DIR/sysutil.sh${NC}"
+
+# Executar o SysUtil
+./sysutil.sh
