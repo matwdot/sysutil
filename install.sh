@@ -124,8 +124,8 @@ if git clone https://github.com/matwdot/sysutil.git "$INSTALL_DIR" --quiet; then
     
     # Mostrar informações do repositório
     cd "$INSTALL_DIR"
-    local commit_hash=$(git rev-parse --short HEAD)
-    local commit_date=$(git log -1 --format=%cd --date=short)
+    commit_hash=$(git rev-parse --short HEAD)
+    commit_date=$(git log -1 --format=%cd --date=short)
     echo -e "  ${DIM}Commit: $commit_hash ($commit_date)${NC}"
 else
     log_error "Falha ao clonar repositório"
@@ -140,7 +140,7 @@ log_info "Aplicando permissões executáveis..."
 chmod +x *.sh
 find . -name "*.sh" -exec chmod +x {} \;
 
-local script_count=$(find . -name "*.sh" | wc -l)
+script_count=$(find . -name "*.sh" | wc -l)
 log_success "$script_count scripts configurados"
 
 # Passo 5: Configurar PATH e alias
