@@ -71,8 +71,8 @@ echo "╔═══════════════════════�
 echo "║                                                              ║"
 echo "║                    ${SPARKLE} SysUtil Installer ${SPARKLE}                    ║"
 echo "║                                                              ║"
-echo "║                        Versão 6.0                           ║"
-echo "║                   by Matheus Wesley                         ║"
+echo "║                        Versão 7.0                           ║"
+echo "║              by Matheus Wesley - Casa Magalhães             ║"
 echo "║                                                              ║"
 echo "╚══════════════════════════════════════════════════════════════╝"
 echo -e "${NC}"
@@ -163,7 +163,6 @@ sed -i '/alias sysutil/d' "$HOME/.bashrc" 2>/dev/null || true
 } >> "$HOME/.bashrc"
 
 # Aplicar as mudanças no shell atual
-export PATH="$INSTALL_DIR:$PATH"
 alias sysutil="cd $INSTALL_DIR && ./sysutil.sh"
 
 log_success "PATH configurado: $INSTALL_DIR"
@@ -202,11 +201,8 @@ echo -e "  ${CYAN}•${NC} Configuração biométrica"
 echo -e "  ${CYAN}•${NC} Limitação de consumo Tec55"
 echo -e "  ${CYAN}•${NC} Transferência SCP"
 
-echo -e "\n${BOLD}${YELLOW}${GEAR} Iniciando SysUtil...${NC}\n"
-
-# Pequena pausa dramática
-sleep 2
-
-# Executar o SysUtil
-cd "$INSTALL_DIR"
-./sysutil.sh
+echo -e "\n${BOLD}${YELLOW}${GEAR} Instalação finalizada!${NC}"
+echo -e "${BOLD}${WHITE}Para iniciar o SysUtil, digite:${NC}"
+echo -e "  ${GREEN}${ROCKET} sysutil${NC}"
+echo -e "\n${DIM}Pressione Enter para continuar ou Ctrl+C para sair${NC}"
+read -r
