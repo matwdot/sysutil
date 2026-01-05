@@ -60,7 +60,6 @@ echo "export PATH=\"$INSTALL_DIR:\$PATH\"" >> "$HOME/.bashrc"
 echo "alias sysutil='cd $INSTALL_DIR && ./sysutil.sh'" >> "$HOME/.bashrc"
 
 # Aplicar as mudanças no shell atual
-export PATH="$INSTALL_DIR:$PATH"
 alias sysutil="cd $INSTALL_DIR && ./sysutil.sh"
 
 echo -e "${GREEN}✓ PATH e alias configurados${NC}"
@@ -73,7 +72,6 @@ echo ""
 echo -e "${BOLD}${GREEN}✓ Instalação concluída!${NC}"
 echo -e "${BOLD}${BLUE}Iniciando SysUtil...${NC}"
 echo ""
-
-# Executar o SysUtil
-cd "$INSTALL_DIR"
-sysutil
+echo -e "${BOLD}${BLUE}Para iniciar digite...${NC}"
+echo "  sysutil"
+echo ""
