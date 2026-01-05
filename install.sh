@@ -1,7 +1,8 @@
 #!/bin/bash
 #
-# SysUtil - Instalador
+# SysUtil - Instalador v7.0
 # Uso: curl -fsSL https://raw.githubusercontent.com/matwdot/sysutil/master/install.sh | bash
+# Atualizado: $(date +%Y-%m-%d)
 #
 
 set -e
