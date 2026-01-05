@@ -2,7 +2,6 @@
 #
 # SysUtil - Instalador v7.0
 # Uso: curl -fsSL https://raw.githubusercontent.com/matwdot/sysutil/master/install.sh | bash
-# Atualizado: $(date +%Y-%m-%d)
 #
 
 set -e
@@ -70,7 +69,7 @@ clear
 echo -e "${BOLD}${PURPLE}"
 echo "╔══════════════════════════════════════════════════════════════╗"
 echo "║                                                              ║"
-echo "║                    ${SPARKLE} SysUtil Installer ${SPARKLE}                    ║"
+echo "║                    ${SPARKLE} SysUtil Instalador ${SPARKLE}                     ║"
 echo "║                                                              ║"
 echo "║                        Versão 7.0                           ║"
 echo "║              by Matheus Wesley - Casa Magalhães             ║"
@@ -163,9 +162,6 @@ sed -i '/alias sysutil/d' "$HOME/.bashrc" 2>/dev/null || true
     echo "alias sysutil='cd $INSTALL_DIR && ./sysutil.sh'"
 } >> "$HOME/.bashrc"
 
-# Aplicar as mudanças no shell atual
-alias sysutil="cd $INSTALL_DIR && ./sysutil.sh"
-
 log_success "PATH configurado: $INSTALL_DIR"
 log_success "Alias criado: sysutil"
 
@@ -205,5 +201,6 @@ echo -e "  ${CYAN}•${NC} Transferência SCP"
 echo -e "\n${BOLD}${YELLOW}${GEAR} Instalação finalizada!${NC}"
 echo -e "${BOLD}${WHITE}Para iniciar o SysUtil, digite:${NC}"
 echo -e "  ${GREEN}${ROCKET} sysutil${NC}"
-echo -e "\n${DIM}Pressione Enter para continuar ou Ctrl+C para sair${NC}"
-read -r
+echo -e "\n${BOLD}${CYAN}Ou execute diretamente:${NC}"
+echo -e "  ${WHITE}cd ~/sysutil && ./sysutil.sh${NC}"
+echo -e "\n${DIM}Instalação concluída com sucesso! ${CHECK}${NC}"
