@@ -2,27 +2,36 @@
 
 Script de utilitários para configuração e manutenção do SysPDV PDV em sistemas Linux.
 
-## 🚀 Instalação e Execução Rápida
+## 🚀 Instalação e Uso
 
-### Uma Linha - Instala e Executa
+### Uma Linha - Instala, Configura e Executa
 ```bash
 curl -fsSL https://raw.githubusercontent.com/matwdot/sysutil/master/install.sh | bash
 ```
+
+**O que faz:**
+- ✅ Remove instalação anterior (se existir)
+- ✅ Baixa a versão mais recente
+- ✅ Configura permissões
+- ✅ Adiciona ao PATH do sistema
+- ✅ Cria alias `sysutil`
+- ✅ Aplica configurações (source)
+- ✅ Executa automaticamente
 
 ### Atualizar Instalação Existente
 ```bash
 curl -fsSL https://raw.githubusercontent.com/matwdot/sysutil/master/update.sh | bash
 ```
 
-### Executar Localmente
-Após a instalação, você pode executar:
+### Executar Após Instalação
+Após a instalação, você pode executar de qualquer lugar:
 ```bash
 sysutil
 ```
 
 Ou diretamente:
 ```bash
-~/sysutil/sysutil.sh
+cd ~/sysutil && ./sysutil.sh
 ```
 
 ## 📋 Funcionalidades

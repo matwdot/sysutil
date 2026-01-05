@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# SysUtil - Instalador e Executor
+# SysUtil - Instalador
 # Uso: curl -fsSL https://raw.githubusercontent.com/matwdot/sysutil/master/install.sh | bash
 #
 
@@ -45,13 +45,29 @@ cd "$INSTALL_DIR"
 chmod +x *.sh
 find . -name "*.sh" -exec chmod +x {} \;
 
-# Criar link simbólico
-echo -e "${GREEN}Criando link simbólico...${NC}"
-if sudo ln -sf "$INSTALL_DIR/sysutil.sh" /usr/local/bin/sysutil 2>/dev/null; then
-    echo -e "${GREEN}✓ Link criado: /usr/local/bin/sysutil${NC}"
-else
-    echo -e "${YELLOW}⚠ Execute manualmente: sudo ln -sf $INSTALL_DIR/sysutil.sh /usr/local/bin/sysutil${NC}"
-fi
+# Adicionar ao PATH e criar alias
+echo -e "${GREEN}Configurando PATH e alias...${NC}"
+
+# Remover entradas antigas se existirem
+sed -i '/# SysUtil PATH/d' "$HOME/.bashrc" 2>/dev/null || true
+sed -i '/export PATH.*sysutil/d' "$HOME/.bashrc" 2>/dev/null || true
+sed -i '/alias sysutil/d' "$HOME/.bashrc" 2>/dev/null || true
+
+# Adicionar novas configurações
+echo "" >> "$HOME/.bashrc"
+echo "# SysUtil PATH e Alias" >> "$HOME/.bashrc"
+echo "export PATH=\"$INSTALL_DIR:\$PATH\"" >> "$HOME/.bashrc"
+echo "alias sysutil='cd $INSTALL_DIR && ./sysutil.sh'" >> "$HOME/.bashrc"
+
+# Aplicar as mudanças no shell atual
+export PATH="$INSTALL_DIR:$PATH"
+alias sysutil="cd $INSTALL_DIR && ./sysutil.sh"
+
+echo -e "${GREEN}✓ PATH e alias configurados${NC}"
+
+# Fazer source do .bashrc
+echo -e "${GREEN}Aplicando configurações...${NC}"
+source "$HOME/.bashrc" 2>/dev/null || true
 
 echo ""
 echo -e "${BOLD}${GREEN}✓ Instalação concluída!${NC}"
@@ -59,4 +75,5 @@ echo -e "${BOLD}${BLUE}Iniciando SysUtil...${NC}"
 echo ""
 
 # Executar o SysUtil
-./sysutil.sh
+cd "$INSTALL_DIR"
+sysutil
