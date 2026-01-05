@@ -1,153 +1,63 @@
 #!/bin/bash
 #
-# SysUtil - Script de Instalação
+# SysUtil - Instalador Simplificado
 # Uso: curl -fsSL https://raw.githubusercontent.com/matwdot/sysutil/master/install.sh | bash
-#
-# Versão: 6.0
-# Autor: Matheus Wesley
 #
 
 set -e
 
-# Cores para output
-RED='\033[0;31m'
+# Cores
 GREEN='\033[0;32m'
+RED='\033[0;31m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 BOLD='\033[1m'
 NC='\033[0m'
 
-# Configurações
-REPO_URL="https://github.com/matwdot/sysutil"
 INSTALL_DIR="$HOME/sysutil"
-TEMP_DIR="/tmp/sysutil-install"
 
-# Função para log
-log() {
-    echo -e "${GREEN}[INFO]${NC} $1"
-}
+echo -e "${BOLD}${BLUE}SysUtil - Instalador v6.0${NC}"
+echo "=================================="
 
-error() {
-    echo -e "${RED}[ERRO]${NC} $1" >&2
+# Verificar dependências básicas
+if ! command -v git >/dev/null 2>&1; then
+    echo -e "${RED}Erro: Git não encontrado${NC}"
+    echo "Instale o git primeiro:"
+    echo "  Ubuntu/Debian: sudo apt install git"
+    echo "  CentOS/RHEL: sudo yum install git"
+    echo "  macOS: xcode-select --install"
     exit 1
-}
+fi
 
-warning() {
-    echo -e "${YELLOW}[AVISO]${NC} $1"
-}
+# Remover instalação anterior
+if [ -d "$INSTALL_DIR" ]; then
+    echo -e "${YELLOW}Removendo instalação anterior...${NC}"
+    rm -rf "$INSTALL_DIR"
+fi
 
-# Verificar se o sistema é suportado
-check_system() {
-    if [[ "$OSTYPE" != "linux-gnu"* ]] && [[ "$OSTYPE" != "darwin"* ]]; then
-        error "Este script funciona em sistemas Linux e macOS"
-    fi
-    
-    # Verificar se tem curl ou wget
-    if ! command -v curl >/dev/null 2>&1 && ! command -v wget >/dev/null 2>&1; then
-        error "curl ou wget é necessário para baixar os arquivos"
-    fi
-    
-    # Verificar se tem git
-    if ! command -v git >/dev/null 2>&1; then
-        warning "Git não encontrado. Tentando instalar..."
-        if [[ "$OSTYPE" == "darwin"* ]]; then
-            # macOS - sugerir instalação via Homebrew ou Xcode
-            error "Git não encontrado. Instale via: 'xcode-select --install' ou 'brew install git'"
-        elif command -v apt-get >/dev/null 2>&1; then
-            sudo apt-get update && sudo apt-get install -y git
-        elif command -v yum >/dev/null 2>&1; then
-            sudo yum install -y git
-        elif command -v dnf >/dev/null 2>&1; then
-            sudo dnf install -y git
-        else
-            error "Não foi possível instalar o git automaticamente"
-        fi
-    fi
-}
+# Clonar repositório
+echo -e "${GREEN}Baixando SysUtil...${NC}"
+git clone https://github.com/matwdot/sysutil.git "$INSTALL_DIR"
 
-# Baixar e instalar o SysUtil
-install_sysutil() {
-    log "Iniciando instalação do SysUtil..."
-    
-    # Remover instalação anterior se existir
-    if [[ -d "$INSTALL_DIR" ]]; then
-        warning "Removendo instalação anterior..."
-        rm -rf "$INSTALL_DIR"
-    fi
-    
-    # Criar diretório temporário
-    mkdir -p "$TEMP_DIR"
-    cd "$TEMP_DIR"
-    
-    # Clonar repositório
-    log "Baixando arquivos do repositório..."
-    git clone "$REPO_URL" . || error "Falha ao clonar repositório"
-    
-    # Mover para diretório de instalação
-    log "Instalando em $INSTALL_DIR..."
-    mkdir -p "$INSTALL_DIR"
-    cp -r . "$INSTALL_DIR/"
-    
-    # Tornar scripts executáveis
-    log "Configurando permissões..."
-    find "$INSTALL_DIR" -name "*.sh" -exec chmod +x {} \;
-    chmod +x "$INSTALL_DIR/sysutil" 2>/dev/null || true
-    
-    # Criar link simbólico para execução global
-    log "Criando link simbólico..."
-    if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-        # Linux - tentar criar link, usar sudo se necessário
-        if ! ln -sf "$INSTALL_DIR/sysutil.sh" "/usr/local/bin/sysutil" 2>/dev/null; then
-            if sudo ln -sf "$INSTALL_DIR/sysutil.sh" "/usr/local/bin/sysutil" 2>/dev/null; then
-                log "Link simbólico criado em /usr/local/bin/sysutil (com sudo)"
-            else
-                warning "Não foi possível criar link em /usr/local/bin"
-                log "Execute manualmente: sudo ln -sf $INSTALL_DIR/sysutil.sh /usr/local/bin/sysutil"
-            fi
-        else
-            log "Link simbólico criado em /usr/local/bin/sysutil"
-        fi
-    elif [[ "$OSTYPE" == "darwin"* ]]; then
-        # macOS
-        if ! ln -sf "$INSTALL_DIR/sysutil.sh" "/usr/local/bin/sysutil" 2>/dev/null; then
-            warning "Não foi possível criar link em /usr/local/bin"
-            log "Execute manualmente: sudo ln -sf $INSTALL_DIR/sysutil.sh /usr/local/bin/sysutil"
-        else
-            log "Link simbólico criado em /usr/local/bin/sysutil"
-        fi
-    fi
-    
-    # Limpar arquivos temporários
-    cd /
-    rm -rf "$TEMP_DIR"
-    
-    log "Instalação concluída com sucesso!"
-}
+# Configurar permissões
+echo -e "${GREEN}Configurando permissões...${NC}"
+cd "$INSTALL_DIR"
+chmod +x *.sh
+find . -name "*.sh" -exec chmod +x {} \;
 
-# Função principal
-main() {
-    echo -e "${BOLD}${BLUE}"
-    echo "=================================================="
-    echo "           SysUtil - Instalador v6.0"
-    echo "=================================================="
-    echo -e "${NC}"
-    
-    check_system
-    install_sysutil
-    
-    echo -e "${GREEN}"
-    echo "=================================================="
-    echo "           Instalação Concluída!"
-    echo "=================================================="
-    echo -e "${NC}"
-    echo "Para executar o SysUtil, digite:"
-    echo -e "${BOLD}  sysutil${NC}"
-    echo ""
-    echo "Ou execute diretamente:"
-    echo -e "${BOLD}  $INSTALL_DIR/sysutil.sh${NC}"
-    echo ""
-    echo -e "${YELLOW}Nota: Alguns recursos podem precisar de sudo${NC}"
-}
+# Criar link simbólico
+echo -e "${GREEN}Criando link simbólico...${NC}"
+if sudo ln -sf "$INSTALL_DIR/sysutil.sh" /usr/local/bin/sysutil 2>/dev/null; then
+    echo -e "${GREEN}✓ Link criado: /usr/local/bin/sysutil${NC}"
+else
+    echo -e "${YELLOW}⚠ Execute manualmente: sudo ln -sf $INSTALL_DIR/sysutil.sh /usr/local/bin/sysutil${NC}"
+fi
 
-# Executar instalação
-main "$@"
+echo ""
+echo -e "${BOLD}${GREEN}✓ Instalação concluída!${NC}"
+echo ""
+echo "Para executar:"
+echo -e "  ${BOLD}sysutil${NC}"
+echo ""
+echo "Ou diretamente:"
+echo -e "  ${BOLD}$INSTALL_DIR/sysutil.sh${NC}"
