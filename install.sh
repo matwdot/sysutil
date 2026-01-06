@@ -15,7 +15,7 @@ BOLD='\033[1m'
 NC='\033[0m'
 
 INSTALL_DIR="$HOME/sysutil"
-TOTAL_STEPS=10
+TOTAL_STEPS=7
 CURRENT_STEP=0
 BAR_WIDTH=40
 
@@ -88,12 +88,6 @@ chmod +x *.sh 2>/dev/null || true
 find . -name "*.sh" -exec chmod +x {} \; 2>/dev/null || true
 
 # Passo 6: Configurar PATH e alias
-update_progress "Removendo PATH e Alias antigo..."
-sleep 0.3
-update_progress "Adicionando novo PATH..."
-sleep 0.3
-update_progress "Adicionando novo alias..."
-sleep 0.3
 update_progress "Configurando sistema..."
 sleep 0.3
 sed -i '/# SysUtil/d' "$HOME/.bashrc" 2>/dev/null || true
