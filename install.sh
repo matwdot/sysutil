@@ -15,7 +15,7 @@ BOLD='\033[1m'
 NC='\033[0m'
 
 INSTALL_DIR="$HOME/sysutil"
-TOTAL_STEPS=7
+TOTAL_STEPS=10
 CURRENT_STEP=0
 BAR_WIDTH=40
 
@@ -88,6 +88,9 @@ chmod +x *.sh 2>/dev/null || true
 find . -name "*.sh" -exec chmod +x {} \; 2>/dev/null || true
 
 # Passo 6: Configurar PATH e alias
+update_progress "Removendo PATH e Alias antigo..."
+update_progress "Adicionando novo PATH..."
+update_progress "Adicionando novo alias..."
 update_progress "Configurando sistema..."
 sleep 0.3
 sed -i '/# SysUtil/d' "$HOME/.bashrc" 2>/dev/null || true
@@ -101,9 +104,6 @@ export PATH="$INSTALL_DIR:\$PATH"
 alias sysutil='cd $INSTALL_DIR && ./sysutil.sh'
 EOF
 
-# Criando Alias para a Sessão
-alias sysutil='cd $INSTALL_DIR && ./sysutil.sh'
-
 # Passo 7: Finalizar
 update_progress "Concluido!"
 
@@ -114,7 +114,7 @@ echo -e "${GREEN}+------------------------------------------+"
 echo -e "|          INSTALACAO CONCLUIDA!           |"
 echo -e "+------------------------------------------+${NC}"
 echo ""
-echo -e "Se é a primeira instalação:"
+echo -e "É a ${BOLD}primeira instalação?${NC}"
 echo -e "1. Execute: ${BOLD}source ~/.bashrc${NC}"
 echo -e "2. Depois:  ${BOLD}sysutil${NC}"
 echo ""

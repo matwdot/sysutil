@@ -36,7 +36,7 @@ show_menu() {
 
   clear
   echo "------------------------------------------"
-  echo -e "${BOLD}           SysUtil v6.0 beta${NC}"
+  echo -e "${BOLD}           SysUtil v7.0 beta${NC}"
   echo "------------------------------------------"
 
   for i in "${!options[@]}"; do
