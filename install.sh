@@ -106,7 +106,6 @@ alias sysutil='cd $INSTALL_DIR && ./sysutil.sh'
 
 # Passo 7: Finalizar
 update_progress "Concluido!"
-source "$HOME/.bashrc" 2>/dev/null || true
 
 # Resultado final
 echo ""
@@ -115,5 +114,10 @@ echo -e "${GREEN}+------------------------------------------+"
 echo -e "|          INSTALACAO CONCLUIDA!           |"
 echo -e "+------------------------------------------+${NC}"
 echo ""
-echo -e "Para iniciar: ${BOLD}sysutil${NC}"
+echo -e "Se é a primeira instalação:"
+echo -e "1. Execute: ${BOLD}source ~/.bashrc${NC}"
+echo -e "2. Depois:  ${BOLD}sysutil${NC}"
+echo ""
+echo -e "Caso contrário:"
+echo -e "Execute: ${GREEN}sysutil${NC}"
 echo ""
