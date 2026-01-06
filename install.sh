@@ -89,8 +89,11 @@ find . -name "*.sh" -exec chmod +x {} \; 2>/dev/null || true
 
 # Passo 6: Configurar PATH e alias
 update_progress "Removendo PATH e Alias antigo..."
+sleep 0.3
 update_progress "Adicionando novo PATH..."
+sleep 0.3
 update_progress "Adicionando novo alias..."
+sleep 0.3
 update_progress "Configurando sistema..."
 sleep 0.3
 sed -i '/# SysUtil/d' "$HOME/.bashrc" 2>/dev/null || true
