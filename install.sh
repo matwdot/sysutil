@@ -101,6 +101,9 @@ export PATH="$INSTALL_DIR:\$PATH"
 alias sysutil='cd $INSTALL_DIR && ./sysutil.sh'
 EOF
 
+# Criando Alias para a Sessão
+alias sysutil='cd $INSTALL_DIR && ./sysutil.sh'
+
 # Passo 7: Finalizar
 update_progress "Concluido!"
 source "$HOME/.bashrc" 2>/dev/null || true
