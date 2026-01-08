@@ -1,7 +1,12 @@
 #!/bin/bash
 #set -x
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Resolve o diretório do script corretamente mesmo quando chamado via sudo bash
+if [[ -n "${BASH_SOURCE[0]}" && "${BASH_SOURCE[0]}" != "$0" ]]; then
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+else
+    SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+fi
 
 # Carrega as funções utilitárias do sistema
 UTILS_PATH="${SCRIPT_DIR}/../../func/utils/utilities.sh"
@@ -88,7 +93,9 @@ install_package() {
             info_msg "Instalando pacote: $package"
             dpkg -i "$package"
         else
-            error_msg "Pacote não encontrado para arquitetura $arch"
+            error_msg "Pacote não encontrado: $package"
+            info_msg "Arquivos disponíveis em ${SCRIPT_DIR}:"
+            ls -la "${SCRIPT_DIR}"/*.deb 2>/dev/null || error_msg "Nenhum pacote .deb encontrado"
             return 1
         fi
     elif [ "$pkg_manager" = "rpm" ]; then
