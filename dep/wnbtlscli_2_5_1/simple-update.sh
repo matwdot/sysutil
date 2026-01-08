@@ -3,13 +3,13 @@
 
 # Recebe o diretório como parâmetro ou tenta detectar
 if [ -n "$1" ] && [ -d "$1" ]; then
-    SCRIPT_DIR="$1"
+    VPN_PKG_DIR="$1"
 else
-    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
+    VPN_PKG_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 fi
 
 # Carrega as funções utilitárias do sistema
-UTILS_PATH="${SCRIPT_DIR}/../../func/utils/utilities.sh"
+UTILS_PATH="${VPN_PKG_DIR}/../../func/utils/utilities.sh"
 if [ -f "$UTILS_PATH" ]; then
     source "$UTILS_PATH"
 else
@@ -88,19 +88,19 @@ install_package() {
     info_msg "Instalando novo pacote..."
     
     if [ "$pkg_manager" = "deb" ]; then
-        package="${SCRIPT_DIR}/wnbtlscli_2.5.1_${arch}.deb"
+        package="${VPN_PKG_DIR}/wnbtlscli_2.5.1_${arch}.deb"
         if [ -f "$package" ]; then
             info_msg "Instalando pacote: $package"
             dpkg -i "$package"
         else
             error_msg "Pacote não encontrado: $package"
-            info_msg "Arquivos disponíveis em ${SCRIPT_DIR}:"
-            ls -la "${SCRIPT_DIR}"/*.deb 2>/dev/null || error_msg "Nenhum pacote .deb encontrado"
+            info_msg "Arquivos disponíveis em ${VPN_PKG_DIR}:"
+            ls -la "${VPN_PKG_DIR}"/*.deb 2>/dev/null || error_msg "Nenhum pacote .deb encontrado"
             return 1
         fi
     elif [ "$pkg_manager" = "rpm" ]; then
         if [ "$arch" = "amd64" ]; then
-            package="${SCRIPT_DIR}/wnbtlscli-2.5.1_amd64.rpm"
+            package="${VPN_PKG_DIR}/wnbtlscli-2.5.1_amd64.rpm"
             if [ -f "$package" ]; then
                 info_msg "Instalando pacote: $package"
                 rpm -Uvh "$package"
