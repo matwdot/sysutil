@@ -3,6 +3,20 @@
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# Carrega as funções utilitárias do sistema
+UTILS_PATH="${SCRIPT_DIR}/../../func/utils/utilities.sh"
+if [ -f "$UTILS_PATH" ]; then
+    source "$UTILS_PATH"
+else
+    # Fallback caso não encontre as funções
+    error_msg() { echo -e "\033[1;31m✘ $1\033[0m" >&2; }
+    success_msg() { echo -e "\033[1;32m✔ $1\033[0m"; }
+    warning_msg() { echo -e "\033[1;33m➜ $1\033[0m"; }
+    info_msg() { echo -e "\033[1;34m➜ $1\033[0m"; }
+    bold_msg() { echo -e "\033[1m$1\033[0m"; }
+    pause() { echo -n -e "\033[1;34m${1:-Pressione ENTER para continuar...}\033[0m"; read -r; }
+fi
+
 # Detecta a arquitetura do sistema
 detect_architecture() {
     local arch
@@ -42,10 +56,7 @@ detect_package_manager() {
 remove_old_installation() {
     local pkg_manager="$1"
     
-    echo ""
-    echo "=========================================="
-    echo " Removendo instalação antiga..."
-    echo "=========================================="
+    info_msg "Removendo instalação antiga..."
     
     if [ "$pkg_manager" = "deb" ]; then
         dpkg --purge wnbtlscli 2>/dev/null
@@ -56,11 +67,11 @@ remove_old_installation() {
         rpm -e wnbmonitor 2>/dev/null
     fi
     
-    echo " Removendo diretórios antigos..."
+    info_msg "Removendo diretórios antigos..."
     rm -rf /etc/wnbtlscli
     rm -rf /var/log/wnb
     
-    echo " Instalação antiga removida."
+    success_msg "Instalação antiga removida."
 }
 
 # Instala o pacote correto
@@ -69,36 +80,33 @@ install_package() {
     local pkg_manager="$2"
     local package=""
     
-    echo ""
-    echo "=========================================="
-    echo " Instalando novo pacote..."
-    echo "=========================================="
+    info_msg "Instalando novo pacote..."
     
     if [ "$pkg_manager" = "deb" ]; then
         package="${SCRIPT_DIR}/wnbtlscli_2.5.1_${arch}.deb"
         if [ -f "$package" ]; then
-            echo " Instalando pacote: $package"
+            info_msg "Instalando pacote: $package"
             dpkg -i "$package"
         else
-            echo " Erro: Pacote não encontrado para arquitetura $arch"
+            error_msg "Pacote não encontrado para arquitetura $arch"
             return 1
         fi
     elif [ "$pkg_manager" = "rpm" ]; then
         if [ "$arch" = "amd64" ]; then
             package="${SCRIPT_DIR}/wnbtlscli-2.5.1_amd64.rpm"
             if [ -f "$package" ]; then
-                echo " Instalando pacote: $package"
+                info_msg "Instalando pacote: $package"
                 rpm -Uvh "$package"
             else
-                echo " Erro: Pacote RPM não encontrado"
+                error_msg "Pacote RPM não encontrado"
                 return 1
             fi
         else
-            echo " Erro: Pacote RPM disponível apenas para amd64"
+            error_msg "Pacote RPM disponível apenas para amd64"
             return 1
         fi
     else
-        echo " Erro: Gerenciador de pacotes não suportado"
+        error_msg "Gerenciador de pacotes não suportado"
         return 1
     fi
 }
@@ -107,61 +115,46 @@ install_package() {
 # INÍCIO DO SCRIPT
 # ==========================================
 
-echo ""
-echo "=========================================="
-echo " WNB TLS CLI - Instalador v2.5.1"
-echo "=========================================="
+bold_msg "WNB TLS CLI - Instalador v2.5.1"
 
 ARCH=$(detect_architecture)
 PKG_MANAGER=$(detect_package_manager)
 
-echo " Arquitetura detectada: $ARCH"
-echo " Gerenciador de pacotes: $PKG_MANAGER"
+info_msg "Arquitetura detectada: $ARCH"
+info_msg "Gerenciador de pacotes: $PKG_MANAGER"
 
 if [ "$ARCH" = "unsupported" ]; then
-    echo " Erro: Arquitetura não suportada: $(uname -m)"
+    error_msg "Arquitetura não suportada: $(uname -m)"
     exit 1
 fi
 
 # 1. Para os serviços
-echo ""
-echo "=========================================="
-echo " Parando serviços..."
-echo "=========================================="
+info_msg "Parando serviços..."
 systemctl stop wnbmonitor 2>/dev/null
 systemctl stop wnbtlscli 2>/dev/null
-echo " Serviços parados."
+success_msg "Serviços parados."
 
 # 2. Exibe a chave TLS caso exista instalação antiga
 if [ -f "/etc/wnbtlscli/registry" ]; then
-    echo ""
-    echo "=========================================="
-    echo " ATENÇÃO: Instalação anterior detectada!"
-    echo "=========================================="
-    echo " Chave TLS atual:"
+    warning_msg "ATENÇÃO: Instalação anterior detectada!"
+    info_msg "Chave TLS atual:"
     echo "------------------------------------------"
     cat /etc/wnbtlscli/registry
     echo "------------------------------------------"
-    echo ""
-    echo " IMPORTANTE: Anote a chave acima antes de continuar!"
-    echo ""
-    read -p " Pressione ENTER para continuar ou CTRL+C para cancelar..."
+    warning_msg "IMPORTANTE: Anote a chave acima antes de continuar!"
+    pause "Pressione ENTER para continuar ou CTRL+C para cancelar..."
     
     # 3. Remove instalação antiga
     remove_old_installation "$PKG_MANAGER"
 else
-    echo ""
-    echo " Nenhuma instalação anterior detectada."
+    info_msg "Nenhuma instalação anterior detectada."
 fi
 
 # 4. Instala o pacote
 install_package "$ARCH" "$PKG_MANAGER" || exit 1
 
 # Configura serviços
-echo ""
-echo "=========================================="
-echo " Configurando serviços..."
-echo "=========================================="
+info_msg "Configurando serviços..."
 systemctl enable wnbmonitor
 systemctl enable wnbtlscli
 
@@ -171,17 +164,12 @@ if [ -f "/etc/wnbtlscli/registry" ]; then
         echo "systemd: true" >> /etc/wnbtlscli/registry
         echo "log_level: 3" >> /etc/wnbtlscli/registry
     fi
-    echo " Iniciando serviços..."
+    info_msg "Iniciando serviços..."
     systemctl start wnbmonitor
-    echo " Instalação concluída com sucesso!"
+    success_msg "Instalação concluída com sucesso!"
 else
-    echo ""
-    echo "=========================================="
-    echo " PRÓXIMO PASSO"
-    echo "=========================================="
-    echo " Execute o comando abaixo para registrar:"
-    echo " wnbupdate -k XXXX"
-    echo "=========================================="
+    warning_msg "Execute o comando abaixo para registrar:"
+    bold_msg "wnbupdate -k XXXX"
 fi
 
 exit 0
