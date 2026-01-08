@@ -1,0 +1,50 @@
+{
+    "packages": {
+        ".": {
+            "release-type": "simple",
+            "package-name": "sysutil",
+            "changelog-sections": [
+                {
+                    "type": "feat",
+                    "section": "✨ Novas Funcionalidades"
+                },
+                {
+                    "type": "fix",
+                    "section": "🐛 Correções"
+                },
+                {
+                    "type": "perf",
+                    "section": "⚡ Melhorias de Performance"
+                },
+                {
+                    "type": "refactor",
+                    "section": "♻️ Refatorações"
+                },
+                {
+                    "type": "docs",
+                    "section": "📚 Documentação"
+                },
+                {
+                    "type": "style",
+                    "section": "💄 Estilo"
+                },
+                {
+                    "type": "test",
+                    "section": "🧪 Testes"
+                },
+                {
+                    "type": "build",
+                    "section": "🔧 Build"
+                },
+                {
+                    "type": "ci",
+                    "section": "👷 CI/CD"
+                },
+                {
+                    "type": "chore",
+                    "section": "🔨 Manutenção"
+                }
+            ]
+        }
+    }
+}
