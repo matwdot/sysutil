@@ -37,7 +37,7 @@ Navegue com as setas `↑`/`↓` e selecione com `Enter`. Pressione `q` ou `0` p
 |-------|-----------|
 | SysPDV PDV | Instalar ou atualizar o sistema |
 | VPN Connect | Gerenciar VPN Wanbee |
-| MFe/DocGate | Drivers MFe e configuração DocGate |
+| MFe/DocGate | Remover drivers MFe |
 | Configurar Periféricos | Editar setty e regras USB |
 | Configurar Biométrico | Servidor biométrico FH80 |
 | Limitar Consumo Tec55 | Limitador CPU para Gertec55 |
@@ -53,7 +53,6 @@ Navegue com as setas `↑`/`↓` e selecione com `Enter`. Pressione `q` ou `0` p
 - Baixa o instalador da build informada
 - Configura periféricos
 - Instala VPN
-- Instala driver MFe
 
 **Atualizar SysPDV PDV**
 - Faz backup dos arquivos `.fdb`
@@ -72,18 +71,8 @@ Navegue com as setas `↑`/`↓` e selecione com `Enter`. Pressione `q` ou `0` p
 
 ### MFe/DocGate
 
-**Instalar Driver MFe**
-- Baixa do site da SEFAZ-CE
-- Versão padrão: 02.05.18
-- Extrai e executa instalador
-
 **Remover Driver MFe**
 - Executa script de remoção em `/opt/sefaz/cco/`
-
-**Configurar DocGate**
-- Extrai DocGate v5 para `/opt/docgate`
-- Faz backup da instalação anterior
-- Abre utilitário de configuração
 
 ### Configurar Periféricos
 
@@ -127,9 +116,7 @@ Copia arquivos/pastas de outra máquina via SCP:
 │   ├── baixar_build.sh
 │   ├── instalar_vpn.sh
 │   ├── remover_vpn.sh
-│   ├── baixar_drive_mfe.sh
 │   ├── remover_drive_mfe.sh
-│   ├── configurar_docgate.sh
 │   ├── configurar_perifericos.sh
 │   ├── configurar_biometria.sh
 │   ├── limitar_consumo.sh

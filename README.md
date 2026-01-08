@@ -38,7 +38,7 @@ cd ~/sysutil && ./sysutil.sh
 
 - **SysPDV PDV**: Instalação e atualização
 - **VPN Connect**: Configuração de VPN
-- **MFe/DocGate**: Drivers e configurações para MFe
+- **MFe**: Remoção de drivers MFe
 - **Periféricos**: Configuração de dispositivos
 - **Biométrico**: Configuração de leitores biométricos
 - **Limitação de Consumo**: Para sistemas Tec55

@@ -123,9 +123,7 @@ menu_vpn() {
 # Função para menu de MFe
 menu_mfe() {
   local mfe_options=(
-    "Instalar Driver MFe"
     "Remover Driver MFe"
-    "Configurar DocGate"
     "Voltar"
   )
   while true; do
@@ -133,20 +131,10 @@ menu_mfe() {
     case $? in
     0)
       clear
-      baixar_drive_mfe
-      echo -e "${GREEN}MFe instalado com sucesso!${NC}"
-      ;;
-    1)
-      clear
       remover_drive_mfe
       echo -e "${GREEN}MFe removido com sucesso!${NC}"
       ;;
-    2)
-      clear
-      configurar_docgate
-      echo -e "${GREEN}DocGate configurado com sucesso!${NC}"
-      ;;
-    3) return ;;
+    1) return ;;
     esac
   done
 }

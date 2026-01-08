@@ -86,7 +86,7 @@ O projeto SysUtil é um sistema de utilitários para gerenciamento do SysPDV PDV
 
 **Recomendação**: 
 - Mover para storage externo (S3, Google Drive, servidor próprio)
-- Modificar `configurar_docgate.sh` para fazer download quando necessário
+- Implementar download automático quando necessário
 - Manter hash MD5/SHA256 para validação de integridade
 
 **Economia**: 40MB
@@ -230,7 +230,6 @@ fi
 
 **Aplicar em**:
 - `fazer_backup_fdb.sh`
-- `configurar_docgate.sh`
 - `baixar_build.sh`
 - Todos os scripts de instalação
 
@@ -260,7 +259,7 @@ fi
 
 #### 3.1 Validação de Downloads
 ```bash
-# ADICIONAR em baixar_build.sh e baixar_drive_mfe.sh
+# ADICIONAR em baixar_build.sh
 EXPECTED_SHA256="..."
 
 if ! echo "$EXPECTED_SHA256  $ARQUIVO" | sha256sum -c -; then

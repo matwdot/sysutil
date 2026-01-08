@@ -167,7 +167,7 @@
     - Log de erros
     - _Requirements: 6.1, 6.2, 6.3_
 
-- [ ] 9. Implementar integração em configurar_docgate.sh
+- [ ] 9. Implementar integração em remover_drive_mfe.sh
   - [ ] 9.1 Adicionar import de utilities.sh
     - Implementar padrão de import padronizado
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5_
@@ -176,123 +176,85 @@
     - Substituir todas as mensagens formatadas por funções apropriadas
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 3.1, 3.2, 3.3, 3.4_
   
-  - [ ] 9.3 Implementar uso de backup_file para backup do DocGate
-    - Substituir mv manual por backup_file
-    - Adicionar tratamento de erro apropriado
-    - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5_
-  
-  - [ ] 9.4 Adicionar logging de configuração do DocGate
-    - Log quando configuração inicia
-    - Log quando backup é criado
-    - Log quando extração completa
-    - Log de erros
-    - _Requirements: 6.1, 6.2, 6.3_
-
-- [ ] 10. Implementar integração em baixar_drive_mfe.sh
-  - [ ] 10.1 Adicionar import de utilities.sh
-    - Implementar padrão de import padronizado
-    - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5_
-  
-  - [ ] 10.2 Substituir mensagens echo por funções utilities
-    - Substituir todas as mensagens formatadas por funções apropriadas nas funções internas
-    - Refatorar funções baixar_arquivo, extrair_arquivo, instalar_driver
-    - _Requirements: 1.1, 1.2, 1.3, 1.4, 3.1, 3.2, 3.3, 3.4_
-  
-  - [ ] 10.3 Implementar uso de ensure_directory
-    - Verificar diretório de destino antes de download
-    - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5_
-  
-  - [ ] 10.4 Adicionar logging de operações de MFe
-    - Log de download, extração e instalação
-    - Log de erros em cada etapa
-    - _Requirements: 6.1, 6.2, 6.4_
-
-- [ ] 11. Implementar integração em remover_drive_mfe.sh
-  - [ ] 11.1 Adicionar import de utilities.sh
-    - Implementar padrão de import padronizado
-    - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5_
-  
-  - [ ] 11.2 Substituir mensagens echo por funções utilities
-    - Substituir todas as mensagens formatadas por funções apropriadas
-    - _Requirements: 1.1, 1.2, 1.3, 1.4, 3.1, 3.2, 3.3, 3.4_
-  
-  - [ ] 11.3 Adicionar verificação de diretório antes de remover
+  - [ ] 9.3 Adicionar verificação de diretório antes de remover
     - Verificar se /opt/sefaz/cco/ existe antes de cd
     - Usar mensagem de erro apropriada
     - _Requirements: 5.2_
   
-  - [ ] 11.4 Adicionar logging de remoção de MFe
+  - [ ] 9.4 Adicionar logging de remoção de MFe
     - Log quando remoção inicia
     - Log quando remoção completa
     - Log de erros
     - _Requirements: 6.1, 6.2, 6.4_
 
-- [ ] 12. Implementar integração em limitar_consumo.sh
-  - [ ] 12.1 Adicionar import de utilities.sh
+- [ ] 10. Implementar integração em limitar_consumo.sh
+  - [ ] 10.1 Adicionar import de utilities.sh
     - Implementar padrão de import padronizado
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5_
   
-  - [ ] 12.2 Substituir mensagens echo por funções utilities
+  - [ ] 10.2 Substituir mensagens echo por funções utilities
     - Substituir todas as mensagens formatadas por funções apropriadas
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 3.1, 3.2, 3.3, 3.4_
   
-  - [ ] 12.3 Adicionar validação com package_installed
+  - [ ] 10.3 Adicionar validação com package_installed
     - Verificar se cpulimit já está instalado antes de instalar
     - _Requirements: 5.3_
   
-  - [ ] 12.4 Adicionar logging de configuração de limitador
+  - [ ] 10.4 Adicionar logging de configuração de limitador
     - Log quando configuração inicia
     - Log quando instalação de cpulimit completa
     - Log quando permissões são aplicadas
     - Log de erros
     - _Requirements: 6.1, 6.2, 6.3_
 
-- [ ] 13. Implementar integração em transferencia.sh
-  - [ ] 13.1 Adicionar import de utilities.sh
+- [ ] 11. Implementar integração em transferencia.sh
+  - [ ] 11.1 Adicionar import de utilities.sh
+  - [ ] 11.1 Adicionar import de utilities.sh
     - Implementar padrão de import padronizado
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5_
   
-  - [ ] 13.2 Substituir mensagens echo por funções utilities
+  - [ ] 11.2 Substituir mensagens echo por funções utilities
     - Substituir todas as mensagens formatadas por funções apropriadas
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 3.1, 3.2, 3.3, 3.4_
   
-  - [ ] 13.3 Adicionar validação de IP com is_valid_ip
+  - [ ] 11.3 Adicionar validação de IP com is_valid_ip
     - Validar IP do host antes de tentar conexão
     - Adicionar mensagem de erro se IP inválido
     - _Requirements: 5.1_
   
-  - [ ] 13.4 Adicionar logging de transferências
+  - [ ] 11.4 Adicionar logging de transferências
     - Log quando transferência inicia
     - Log quando transferência completa
     - Log de erros de transferência
     - _Requirements: 6.1, 6.2, 6.4_
 
-- [ ] 14. Teste de regressão completo do sistema
-  - [ ] 14.1 Testar menu principal
+- [ ] 12. Teste de regressão completo do sistema
+  - [ ] 12.1 Testar menu principal
+  - [ ] 12.1 Testar menu principal
     - Verificar que menu carrega corretamente
     - Verificar navegação entre submenus
     - Verificar que opção Sair funciona
     - _Requirements: 8.1, 8.2, 8.3_
   
-  - [ ] 14.2 Testar cada função via menu
+  - [ ] 12.2 Testar cada função via menu
     - Executar cada função do menu e verificar comportamento
     - Verificar que mensagens aparecem formatadas
     - Verificar que não há erros de execução
     - _Requirements: 8.1, 8.2, 8.4, 8.5_
   
-  - [ ] 14.3 Verificar logs gerados
+  - [ ] 12.3 Verificar logs gerados
     - Verificar que arquivo /var/log/sysutil.log existe
     - Verificar que logs têm formato correto
     - Verificar que operações críticas foram logadas
     - _Requirements: 6.4, 6.5_
   
-  - [ ] 14.4 Testar execução direta de scripts
+  - [ ] 12.4 Testar execução direta de scripts
     - Executar cada script diretamente (não via menu)
     - Verificar que utilities.sh é carregado corretamente
     - Verificar que não há erros de import
     - _Requirements: 2.4, 8.1, 8.2_
 
-- [ ] 15. Documentação e finalização
+- [ ] 13. Documentação e finalização
   - Atualizar comentários nos scripts modificados
   - Documentar padrão de uso de utilities.sh para futuros desenvolvedores
   - Criar guia de troubleshooting para problemas comuns

@@ -18,9 +18,7 @@ O projeto SysUtil possui 12 scripts de funções principais que atualmente utili
 sysutil/
 ├── func/
 │   ├── baixar_build.sh
-│   ├── baixar_drive_mfe.sh
 │   ├── configurar_biometria.sh
-│   ├── configurar_docgate.sh
 │   ├── configurar_perifericos.sh
 │   ├── db.sh
 │   ├── fazer_backup_fdb.sh
@@ -281,15 +279,13 @@ Para cada script modificado:
 ### Medium Priority (Configuration)
 4. `configurar_perifericos.sh`
 5. `configurar_biometria.sh`
-6. `configurar_docgate.sh`
-7. `baixar_drive_mfe.sh`
 
 ### Low Priority (Maintenance)
-8. `remover_vpn.sh`
-9. `remover_drive_mfe.sh`
-10. `limitar_consumo.sh`
-11. `transferencia.sh`
-12. `db.sh`
+6. `remover_vpn.sh`
+7. `remover_drive_mfe.sh`
+8. `limitar_consumo.sh`
+9. `transferencia.sh`
+10. `db.sh`
 
 ## Migration Map
 
@@ -351,27 +347,7 @@ Para cada script modificado:
 - Usar ensure_directory para verificar diretório
 - Adicionar logs de configuração
 
-#### 6. configurar_docgate.sh
-**Current Issues**:
-- Usa echo direto com cores
-- Não usa função de backup padronizada
-
-**Changes**:
-- Substituir echo por funções de mensagem
-- Usar backup_file para backup do DocGate
-- Adicionar logs de configuração
-
-#### 7. baixar_drive_mfe.sh
-**Current Issues**:
-- Usa echo direto com cores
-- Funções internas poderiam usar utilities
-
-**Changes**:
-- Substituir echo por funções de mensagem
-- Refatorar funções internas para usar utilities
-- Adicionar logs de download e instalação
-
-#### 8. remover_vpn.sh
+#### 6. remover_vpn.sh
 **Current Issues**:
 - Usa echo direto com cores
 - Não verifica se comando existe
@@ -381,7 +357,7 @@ Para cada script modificado:
 - Usar command_exists para verificar wnbmonitor
 - Adicionar logs de remoção
 
-#### 9. remover_drive_mfe.sh
+#### 7. remover_drive_mfe.sh
 **Current Issues**:
 - Usa echo direto com cores
 - Não verifica se diretório existe
@@ -391,7 +367,7 @@ Para cada script modificado:
 - Adicionar verificação de diretório
 - Adicionar logs de remoção
 
-#### 10. limitar_consumo.sh
+#### 8. limitar_consumo.sh
 **Current Issues**:
 - Usa echo direto com cores
 - Não verifica se pacote já está instalado
@@ -401,7 +377,7 @@ Para cada script modificado:
 - Usar package_installed para verificar cpulimit
 - Adicionar logs de configuração
 
-#### 11. transferencia.sh
+#### 9. transferencia.sh
 **Current Issues**:
 - Usa echo direto com cores
 - Não valida IP
@@ -412,7 +388,7 @@ Para cada script modificado:
 - Usar is_valid_ip para validar IP
 - Adicionar logs de transferência
 
-#### 12. db.sh
+#### 10. db.sh
 **Current Issues**:
 - Função vazia (placeholder)
 

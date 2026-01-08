@@ -63,16 +63,12 @@ menu_vpn() {
 # ---------------------
 menu_mfe() {
   local options=(
-    "Instalar Driver MFe"
     "Remover Driver MFe"
-    "Configurar DocGate"
     "Voltar"
   )
   
   local functions=(
-    "baixar_drive_mfe"
     "remover_drive_mfe"
-    "configurar_docgate"
   )
   
   submenu "MFe/DocGate" "${options[@]}" -- "${functions[@]}"

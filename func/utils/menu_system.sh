@@ -97,6 +97,7 @@ fzf_menu() {
     --margin=1 \
     --padding=1 \
     --reverse \
+    --no-preview \
     --header="Digite para pesquisar | ESC para sair")
   
   # Retorna o índice da opção selecionada

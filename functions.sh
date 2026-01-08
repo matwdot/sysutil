@@ -18,10 +18,8 @@
 
 . func/instalar_vpn.sh
 . func/remover_vpn.sh
-. func/baixar_drive_mfe.sh
 . func/remover_drive_mfe.sh
 . func/configurar_perifericos.sh
-. func/configurar_docgate.sh
 . func/configurar_biometria.sh
 . func/baixar_build.sh
 . func/limitar_consumo.sh
@@ -44,7 +42,6 @@ instalar_syspdv() {
     baixar_build
     configurar_perifericos
     instalar_vpn
-    instalar_drive_mfe
   else
     error_msg "Instalação do SysPDV cancelada"
   fi
