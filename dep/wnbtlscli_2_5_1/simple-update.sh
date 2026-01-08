@@ -1,12 +1,9 @@
 #!/bin/bash
 #set -x
 
-# Resolve o diretório do script corretamente mesmo quando chamado via sudo bash
-if [[ -n "${BASH_SOURCE[0]}" && "${BASH_SOURCE[0]}" != "$0" ]]; then
-    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-else
-    SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-fi
+# IMPORTANTE: Define o diretório ANTES de carregar qualquer source
+# para evitar que BASH_SOURCE seja sobrescrito
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 # Carrega as funções utilitárias do sistema
 UTILS_PATH="${SCRIPT_DIR}/../../func/utils/utilities.sh"
