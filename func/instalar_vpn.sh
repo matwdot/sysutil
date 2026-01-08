@@ -28,9 +28,9 @@ instalar_vpn() {
       return 1
     fi
     
-    # Executa o instalador no diretório correto
+    # Executa o instalador passando o diretório como parâmetro
     local vpn_dir="${script_dir}/dep/wnbtlscli_2_5_1"
-    if sudo bash -c "cd '$vpn_dir' && bash './simple-update.sh'"; then
+    if sudo bash "$vpn_installer" "$vpn_dir"; then
       # Verifica se precisa registrar a chave
       if [ ! -f "/etc/wnbtlscli/registry" ]; then
         info_msg "Informe a chave da VPN: "

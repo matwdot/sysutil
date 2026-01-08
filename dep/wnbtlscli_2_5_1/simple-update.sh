@@ -1,9 +1,12 @@
 #!/bin/bash
 #set -x
 
-# IMPORTANTE: Define o diretório ANTES de carregar qualquer source
-# para evitar que BASH_SOURCE seja sobrescrito
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+# Recebe o diretório como parâmetro ou tenta detectar
+if [ -n "$1" ] && [ -d "$1" ]; then
+    SCRIPT_DIR="$1"
+else
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
+fi
 
 # Carrega as funções utilitárias do sistema
 UTILS_PATH="${SCRIPT_DIR}/../../func/utils/utilities.sh"
