@@ -122,8 +122,6 @@ install_package() {
 # INÍCIO DO SCRIPT
 # ==========================================
 
-bold_msg "WNB TLS CLI - Instalador v2.5.1"
-
 ARCH=$(detect_architecture)
 PKG_MANAGER=$(detect_package_manager)
 
