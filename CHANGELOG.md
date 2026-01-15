@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/matwdot/sysutil/compare/v1.0.0...v1.1.0) (2026-01-15)
+
+
+### Features
+
+* reorganizar documentação e criar sistema de download ([caa260f](https://github.com/matwdot/sysutil/commit/caa260f50fe790511fa83cf7d56d7f299e683de4))
+
 ## 1.0.0 (2026-01-08)
 
 
