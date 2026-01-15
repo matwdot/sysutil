@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/matwdot/sysutil/compare/v1.1.0...v1.2.0) (2026-01-15)
+
+
+### Features
+
+* release 7.0.1 - Download Manager, DocGate removal, sistema de logs e reorganização do projeto ([6a7a1af](https://github.com/matwdot/sysutil/commit/6a7a1af53333a45ee020870219ce632e84c8ae65))
+
 ## [7.0.1](https://github.com/matwdot/sysutil/releases/tag/v7.0.1) (2026-01-15)
 
 ### ✨ Novas Funcionalidades
