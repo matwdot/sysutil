@@ -34,15 +34,19 @@ remover_docgate() {
             # Remover a pasta /opt/docgate
             if sudo rm -rf /opt/docgate; then
                 success_msg "DocGate removido com sucesso."
+                read -r -p "Pressione Enter para continuar..."
             else
                 error_msg "Erro ao remover a pasta /opt/docgate."
+                read -r -p "Pressione Enter para continuar..."
                 return 1
             fi
         else
             error_msg "A pasta /opt/docgate não existe."
+            read -r -p "Pressione Enter para continuar..."
             return 1
         fi
     else
+        read -r -p "Pressione Enter para continuar..."
         error_msg "Remoção do DocGate cancelada."
     fi
 }
