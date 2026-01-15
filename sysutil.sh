@@ -124,6 +124,7 @@ menu_vpn() {
 menu_mfe() {
   local mfe_options=(
     "Remover Driver MFe"
+    "Remover DocGate"
     "Voltar"
   )
   while true; do
@@ -134,7 +135,12 @@ menu_mfe() {
       remover_drive_mfe
       echo -e "${GREEN}MFe removido com sucesso!${NC}"
       ;;
-    1) return ;;
+    1)
+      clear
+      remover_docgate
+      echo -e "${GREEN}DocGate removido com sucesso!${NC}"
+      ;;
+    2) return ;;
     esac
   done
 }

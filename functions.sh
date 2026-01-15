@@ -27,6 +27,7 @@
 . func/transferencia.sh
 . func/db.sh
 . func/fazer_backup_fdb.sh
+. func/remover_docgate.sh
 
 # Utilitários
 . func/utils/utilities.sh
