@@ -1,4 +1,4 @@
-# SysUtil v6.0
+# SysUtil v7.0.1
 
 Script de utilitários para configuração e manutenção do SysPDV PDV em sistemas Linux.
 

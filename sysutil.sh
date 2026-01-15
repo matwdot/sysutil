@@ -2,7 +2,7 @@
 #
 # sysutil.sh - Script de utilitários para o SysPDV PDV em Linux
 #
-# Versão: 6.0
+# Versão: 7.0.1
 # Autor: Matheus Wesley
 # GitHub: https://matheuswesley.github.io/devlinks
 # GitHub Projeto: https://matwdot.github.
@@ -36,7 +36,7 @@ show_menu() {
 
   clear
   echo "------------------------------------------"
-  echo -e "${BOLD}           SysUtil v7.0 beta${NC}"
+  echo -e "${BOLD}           SysUtil v7.0.1${NC}"
   echo "------------------------------------------"
 
   for i in "${!options[@]}"; do
