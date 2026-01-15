@@ -74,6 +74,14 @@ A primeira execução criará a estrutura necessária e as próximas releases se
 
 ## Solução de Problemas
 
+### Erro "GitHub Actions is not permitted to create or approve pull requests"
+**SOLUÇÃO OBRIGATÓRIA**: Vá em Settings > Actions > General e:
+
+1. **Workflow permissions**: Selecione "Read and write permissions"
+2. **IMPORTANTE**: Marque "Allow GitHub Actions to create and approve pull requests"
+
+Sem essa configuração, o Release Please não consegue criar os PRs automáticos.
+
 ### Erro "Resource not accessible by integration"
 Se você receber este erro, verifique:
 

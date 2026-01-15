@@ -15,43 +15,41 @@
 
 # Instala VPN
 instalar_vpn() {
+  local script_dir
+  script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+  local vpn_installer="${script_dir}/dep/wnbtlscli_2_5_1/simple-update.sh"
 
   if confirm_action "Deseja instalar a VPN?"; then
-    if confirm_action "Utiliza a versão 18.04?"; then
-      # Logica versão 18.04
-      info_msg "Iniciando a instalação da VPN para versão 18.04..."
-      if sudo chmod +x dep/wnbtlscli_2_5_1/wnbtlscli_2.5.1_i386.deb; then
-        info_msg "Aplicando permissões ao arquivo."
-        sleep 2
-        if ! sudo dpkg -i dep/wnbtlscli_2_5_1/wnbtlscli_2.5.1_i386.deb; then
-          error_msg "Erro ao instalar a VPN. Verifique permissões e tente novamente."
-          sleep 2
-        else
-          info_msg "Informe a chave da VPN: "
-          read -r key
-          sudo wnbupdate -k "$key" && sudo wnbmonitor -r
-          sleep 2
-          success_msg "VPN instalada com sucesso!"
-        fi
-      else
-        error_msg "Erro ao aplicar permissão..."
-        sleep 2
-      fi
-    else
-      # Logica versão 22.04 ou superior
-      info_msg "Iniciando a instalação da VPN para versão 22.04 ou superior..."
-      if ! sudo ./dep/wnbinstall.sh -i; then
-        error_msg "Erro ao instalar a VPN. Verifique permissões e tente novamente."
-        sleep 2
-      else
+    info_msg "Iniciando a instalação da VPN..."
+    
+    # Verifica se o script de instalação existe
+    if [ ! -f "$vpn_installer" ]; then
+      error_msg "Script de instalação não encontrado: $vpn_installer"
+      return 1
+    fi
+    
+    # Executa o instalador passando o diretório como parâmetro
+    local vpn_dir="${script_dir}/dep/wnbtlscli_2_5_1"
+    if sudo bash "$vpn_installer" "$vpn_dir"; then
+      # Verifica se precisa registrar a chave
+      if [ ! -f "/etc/wnbtlscli/registry" ]; then
         info_msg "Informe a chave da VPN: "
         read -r key
-        sudo wnbmonitor -k "$key" && sudo wnbmonitor -r
-        sleep 2
+        if [ -n "$key" ]; then
+          sudo wnbupdate -k "$key" && sudo wnbmonitor -r
+          sleep 2
+          success_msg "VPN instalada e registrada com sucesso!"
+        else
+          warning_msg "Chave não informada. Execute manualmente: sudo wnbupdate -k SUA_CHAVE"
+        fi
+      else
         success_msg "VPN instalada com sucesso!"
       fi
+    else
+      error_msg "Erro ao instalar a VPN. Verifique o log acima."
+      return 1
     fi
   else
-    info_msg "Configuração da VPN cancelada."
+    info_msg "Instalação da VPN cancelada."
   fi
 }

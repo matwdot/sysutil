@@ -1,0 +1,40 @@
+# SysUtil - Arquivos ignorados
+
+# Cache de downloads
+downloads/
+.cache/
+
+# Logs
+*.log
+logs/
+
+# Backups temporários
+backup_*
+*.bak
+*.backup
+
+# Arquivos de configuração local
+config/local.conf
+.env
+
+# Arquivos temporários
+*.tmp
+*.temp
+temp/
+
+# Dependências baixadas (usar download manager)
+dep/docgateV5.tar.gz
+dep/wnbtlscli_2_5_1/*.deb
+dep/wnbtlscli_2_5_1/*.rpm
+dep/wnbtlscli_2_5_1/*.tar
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Sistema
+.DS_Store
+Thumbs.db
