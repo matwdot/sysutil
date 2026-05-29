@@ -31,8 +31,8 @@ limitar_consumo() {
     if ! package_installed "cpulimit"; then
       info_msg "Instalando cpulimit..."
       if ! sudo apt update && sudo apt install -y cpulimit; then
-      error_msg "Erro ao atualizar pacotes ou instalar o cpulimit."
-    fi
+        error_msg "Erro ao atualizar pacotes ou instalar o cpulimit."
+      fi
     fi
 
     # Dar permissão de execução aos arquivos e copiá-los

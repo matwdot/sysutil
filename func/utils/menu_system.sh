@@ -32,7 +32,7 @@ show_menu() {
   
   clear
   echo "------------------------------------------"
-  echo -e "${BOLD}           SysUtil v8.0${NC}"
+  echo -e "${BOLD}           SysUtil v${VERSION:-8.0}${NC}"
   echo "------------------------------------------"
   
   for i in "${!options[@]}"; do
