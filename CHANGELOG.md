@@ -1,5 +1,56 @@
 # Changelog
 
+## [8.0.0](https://github.com/matwdot/sysutil/releases/tag/v8.0.0) (2026-05-29)
+
+### ♻️ Refatorações (Breaking)
+
+* **Entrypoint único**: `sysutil.sh` removido. O único entrypoint é `sysutil` (sem extensão).
+* **Menu duplicado eliminado**: Funções inline `get_input`, `show_menu`, `navigate_menu` removidas de `sysutil.sh`.
+  Sistema de menus vive exclusivamente em `func/utils/menu_system.sh`.
+* **`create_alias.sh` movido** para `scripts/create_alias.sh` — não é mais sourced a cada execução,
+  executado apenas uma vez pelo instalador.
+* **Versão centralizada**: Nova `config/version.sh` com `$VERSION="8.0.0"`. Todos os scripts
+  que exibem versão sourceiam este arquivo.
+
+### 🗑️ Remoções
+
+* **`func/db.sh`** — placeholder vazio removido junto com a opção "Manutenção via banco" do menu.
+* **`func/requisitos.sh`** — arquivo órfão, comentado em `functions.sh` há releases.
+* **`dep/docgateV5.tar.gz`** — movido para GitHub Release asset (`v8.0-deps`).
+  Download sob demanda via `download_manager.sh` com verificação SHA256.
+* **`dep/wnbtlscli_2_5_1/*.deb`, `*.rpm`, `*.tar`** — movidos para GitHub Release asset (`v8.0-deps`).
+  Disponíveis para download via `download_manager.sh vpn <tipo>`.
+* **`sleep` arbitrários** removidos de todos os módulos funcionais.
+
+### 🔒 Segurança
+
+* **`chmod 777 -R` substituído por `chmod 755 -R`** em `configurar_biometria.sh` e `limitar_consumo.sh`.
+* **Chave da VPN isolada**: salva em `~/.sysutil/chave.txt` com permissão 600
+  (`remover_vpn.sh`), em vez do diretório de trabalho atual.
+* **Validação de IP** com `is_valid_ip()` adicionada em `transferencia.sh`.
+* **Build numérica validada** com `is_number()` em `baixar_build.sh`.
+* **Sanitização de caminho** com `realpath -m` no diretório destino de `baixar_build.sh`.
+
+### ✨ Melhorias
+
+* **Mensagens padronizadas**: Todos os 10 módulos em `func/*.sh` agora usam
+  `error_msg`, `success_msg`, `info_msg`, `warning_msg` de `utilities.sh`.
+* **Import guard consistente**: Todos os módulos usam o padrão
+  `if [[ -z "$(type -t error_msg)" ]]` para carregar `utilities.sh` com fallback.
+* **Tratamento de erros**: Verificação de retorno em operações críticas
+  (`sudo`, `cp`, `curl`, `scp`) com mensagens específicas e `return 1`.
+* **`package_installed`**: Usado em `limitar_consumo.sh` para evitar
+  `apt update` desnecessário quando `cpulimit` já está presente.
+* **Variáveis protegidas com quotes** em `fazer_backup_fdb.sh`.
+
+### 🔧 Infraestrutura
+
+* **Release-please manifest** atualizado para `8.0.0`.
+* **`.gitignore`** atualizado: dependências binárias VPN/DocGate agora ignoradas.
+* **Tamanho do repositório**: ~187MB → ~97MB (redução de 48%).
+
+---
+
 ## [7.0.1](https://github.com/matwdot/sysutil/releases/tag/v7.0.1) (2026-01-15)
 
 ### ✨ Novas Funcionalidades

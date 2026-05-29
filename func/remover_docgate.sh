@@ -2,7 +2,7 @@
 #
 # sysutil.sh - Script de utilitários para o SysPDV PDV em Linux
 #
-# Versão: 7.0
+# Versão: 8.0
 # Autor: Matheus Wesley
 # GitHub: https://matheuswesley.github.io/devlinks
 # GitHub Projeto: https://matwdot.github.
@@ -13,9 +13,15 @@
 #
 # *************************************************************
 
-# IMPORTAÇÕES
-# shellcheck disable=SC1091
-
+# Import utilities if not loaded
+if [[ -z "$(type -t error_msg)" ]]; then
+  SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  # shellcheck source=utils/utilities.sh
+  source "${SCRIPT_DIR}/utils/utilities.sh" || {
+    echo "ERRO: Não foi possível carregar utilities.sh"
+    exit 1
+  }
+fi
 
 remover_docgate() {
     if confirm_action "Deseja remover o DocGate?"; then
@@ -28,7 +34,6 @@ remover_docgate() {
             if [ -n "$docgate_pid" ]; then
                 info_msg "Encerrando processo do DocGate (PID: $docgate_pid)..."
                 sudo kill -9 $docgate_pid 2>/dev/null
-                sleep 1
             fi
             
             # Remover a pasta /opt/docgate

@@ -2,7 +2,7 @@
 #
 # menu_system.sh - Sistema de menus para SysUtil
 #
-# Versão: 7.0
+# Versão: 8.0
 # Autor: Matheus Wesley
 # GitHub: https://matheuswesley.github.io/devlinks
 # GitHub Projeto: https://matwdot.github.io
@@ -32,7 +32,7 @@ show_menu() {
   
   clear
   echo "------------------------------------------"
-  echo -e "${BOLD}           SysUtil v7.0 beta${NC}"
+  echo -e "${BOLD}           SysUtil v8.0${NC}"
   echo "------------------------------------------"
   
   for i in "${!options[@]}"; do

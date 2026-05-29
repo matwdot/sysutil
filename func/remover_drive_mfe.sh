@@ -2,7 +2,7 @@
 #
 # sysutil.sh - Script de utilitários para o SysPDV PDV em Linux
 #
-# Versão: 5.2
+# Versão: 8.0
 # Autor: Matheus Wesley
 # GitHub: https://matheuswesley.github.io/devlinks
 # GitHub Projeto: https://matwdot.github.
@@ -13,6 +13,16 @@
 #
 # *************************************************************
 
+# Import utilities if not loaded
+if [[ -z "$(type -t error_msg)" ]]; then
+  SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  # shellcheck source=utils/utilities.sh
+  source "${SCRIPT_DIR}/utils/utilities.sh" || {
+    echo "ERRO: Não foi possível carregar utilities.sh"
+    exit 1
+  }
+fi
+
 # Baixa e instala o Driver MFe
 remover_drive_mfe() {
   if confirm_action "Deseja remover o Drive MFe?"; then
@@ -20,7 +30,6 @@ remover_drive_mfe() {
       if sudo ./remove-driver.sh; then
         sudo rm -rf /opt/sefaz
         success_msg "Driver MFe removido com sucesso."
-        sleep 5
       else
         error_msg "Erro ao executar o script de remoção do driver MFe."
       fi

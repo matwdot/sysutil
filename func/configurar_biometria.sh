@@ -2,7 +2,7 @@
 #
 # sysutil.sh - Script de utilitários para o SysPDV PDV em Linux
 #
-# Versão: 5.2
+# Versão: 8.0
 # Autor: Matheus Wesley
 # GitHub: https://matheuswesley.github.io/devlinks
 # GitHub Projeto: https://matwdot.github.
@@ -13,6 +13,16 @@
 #
 # **************************************************************
 
+# Import utilities if not loaded
+if [[ -z "$(type -t error_msg)" ]]; then
+  SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  # shellcheck source=utils/utilities.sh
+  source "${SCRIPT_DIR}/utils/utilities.sh" || {
+    echo "ERRO: Não foi possível carregar utilities.sh"
+    exit 1
+  }
+fi
+
 # Configura biometria
 configurar_biometria() {
 
@@ -20,9 +30,8 @@ configurar_biometria() {
   if confirm_action "Deseja configurar a biometria?"; then
     # Aplica permissão na pasta
     BIOMETRIA_DIR=/opt/ServidorBiometrico/
-    if ! sudo chmod 777 -R "$BIOMETRIA_DIR"; then
+    if ! sudo chmod 755 -R "$BIOMETRIA_DIR"; then
       error_msg "Erro ao aplicar permissão a pasta $BIOMETRIA_DIR."
-      sleep 2
     fi
 
     

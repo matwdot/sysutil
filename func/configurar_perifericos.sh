@@ -2,7 +2,7 @@
 #
 # sysutil.sh - Script de utilitários para o SysPDV PDV em Linux
 #
-# Versão: 5.2
+# Versão: 8.0
 # Autor: Matheus Wesley
 # GitHub: https://matheuswesley.github.io/devlinks
 # GitHub Projeto: https://matwdot.github.
@@ -12,6 +12,16 @@
 # manutenção do sistema SysPDV PDV em ambientes Linux.
 #
 # *************************************************************
+
+# Import utilities if not loaded
+if [[ -z "$(type -t error_msg)" ]]; then
+  SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  # shellcheck source=utils/utilities.sh
+  source "${SCRIPT_DIR}/utils/utilities.sh" || {
+    echo "ERRO: Não foi possível carregar utilities.sh"
+    exit 1
+  }
+fi
 
 # Configura periféricos
 configurar_perifericos() {
@@ -34,13 +44,12 @@ configurar_perifericos() {
       info_msg "Abrindo: setty e 90-dispositivos-usb.rules"
 
       # Esperar que o usuário termine de configurar
-      info_msg "${YELLOW}Pressione Enter quando concluir a configuração.${NC}"
+      info_msg "Pressione Enter quando concluir a configuração."
       read -r -p ""
 
       # Aplica permissão na pasta
       if ! sudo chmod +x "$setty"; then
         error_msg "Erro ao aplicar permissão no arquivo $setty"
-        sleep 2
       else
         sudo setty
       fi
