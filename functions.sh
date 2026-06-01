@@ -30,6 +30,7 @@
 # Utilitários
 . func/utils/utilities.sh
 . func/utils/menu_system.sh
+. func/utils/peripherals.sh
 
 # FUNÇÕES
 

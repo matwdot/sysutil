@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# sysutil.sh - Script de utilitários para o SysPDV PDV em Linux
+# configurar_perifericos.sh - Configuração de periféricos USB/Serial
 #
 # Versão: 8.0
 # Autor: Matheus Wesley
@@ -8,52 +8,68 @@
 # GitHub Projeto: https://matwdot.github.
 # Licença: MIT
 #
-# Este script contém um conjunto de funções para instalação, atualização e
-# manutenção do sistema SysPDV PDV em ambientes Linux.
-#
 # *************************************************************
 
-# Import utilities if not loaded
-if [[ -z "$(type -t error_msg)" ]]; then
+# Import peripherals if not loaded
+if [[ -z "$(type -t listar_dispositivos)" ]]; then
   SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-  # shellcheck source=utils/utilities.sh
-  source "${SCRIPT_DIR}/utils/utilities.sh" || {
-    echo "ERRO: Não foi possível carregar utilities.sh"
+  # shellcheck source=utils/peripherals.sh
+  source "${SCRIPT_DIR}/utils/peripherals.sh" || {
+    echo "ERRO: Não foi possível carregar peripherals.sh"
     exit 1
   }
 fi
 
-# Configura periféricos
+# Menu principal de configuração de periféricos
 configurar_perifericos() {
+  local opcoes=(
+    "Configurar dispositivo específico"
+    "Editar regras manualmente (subl/nano)"
+    "Voltar"
+  )
 
-  if confirm_action "Deseja configurar os periféricos?"; then
+  while true; do
+    clear
+    select_menu "Configuração de Periféricos" "${opcoes[@]}"
+    local escolha=$?
 
-    # Verifica se o Sublime está instalado, caso não ativa o nano
+    case $escolha in
+      0)
+        clear
+        configurar_dispositivo_interativo
+        ;;
+      1)
+        clear
+        editar_regras_manualmente
+        ;;
+      2|255)
+        clear
+        return
+        ;;
+    esac
+  done
+}
+
+# Fluxo original: edição manual com Sublime Text ou nano
+editar_regras_manualmente() {
+  if confirm_action "Deseja configurar os periféricos manualmente?"; then
     if command -v subl &>/dev/null; then
       editor="subl"
     else
-      error_msg "Sublime Text não encontrado. Utilizando o editor padrão (nano)."
+      warning_msg "Sublime Text não encontrado. Utilizando o editor padrão (nano)."
       editor="nano"
     fi
 
-    # Define variaveis para os arquivos setty e 90-dispositivos
-    setty=/usr/local/bin/setty
-    dispositivos=/etc/udev/rules.d/90-dispositivos-usb.rules
-
-    if $editor $setty && $editor $dispositivos; then
-      info_msg "Abrindo: setty e 90-dispositivos-usb.rules"
-
-      # Esperar que o usuário termine de configurar
+    if $editor "$SETTY_FILE" && $editor "$RULES_FILE"; then
+      info_msg "Abrindo: $SETTY_FILE e $RULES_FILE"
       info_msg "Pressione Enter quando concluir a configuração."
       read -r -p ""
 
-      # Aplica permissão na pasta
-      if ! sudo chmod +x "$setty"; then
-        error_msg "Erro ao aplicar permissão no arquivo $setty"
+      if ! sudo chmod +x "$SETTY_FILE"; then
+        error_msg "Erro ao aplicar permissão no arquivo $SETTY_FILE"
       else
-        sudo setty
+        sudo "$SETTY_FILE"
       fi
-
     else
       error_msg "Erro ao abrir os arquivos de configuração."
     fi
