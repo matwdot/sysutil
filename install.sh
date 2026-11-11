@@ -1,7 +1,13 @@
 #!/bin/bash
 #
 # SysUtil - Instalador v8.0
-# Uso: curl -fsSL https://raw.githubusercontent.com/matwdot/sysutil/master/install.sh | sudo bash
+# Uso:
+#   Versão estável (master):
+#     curl -fsSL https://raw.githubusercontent.com/matwdot/sysutil/master/install.sh | sudo bash
+#   Versão de desenvolvimento (dev):
+#     curl -fsSL https://raw.githubusercontent.com/matwdot/sysutil/master/install.sh | sudo bash -s -- --dev
+#   Com o arquivo baixado:
+#     sudo bash install.sh [--dev]
 #
 
 # Instala em /opt/sysutil (para todos os usuários) e cria o comando
@@ -20,11 +26,29 @@ NC='\033[0m'
 INSTALL_DIR="${SYSUTIL_INSTALL_DIR:-/opt/sysutil}"
 BIN_LINK="${SYSUTIL_BIN_LINK:-/usr/local/bin/sysutil}"
 REPO_URL="${SYSUTIL_REPO:-https://github.com/matwdot/sysutil.git}"
+BRANCH="${SYSUTIL_BRANCH:-master}"
 NEW_DIR="${INSTALL_DIR}.new"
 OLD_DIR="${INSTALL_DIR}.old"
 TOTAL_STEPS=7
 CURRENT_STEP=0
 BAR_WIDTH=40
+
+# Opções
+for arg in "$@"; do
+    case "$arg" in
+        --dev) BRANCH="dev" ;;
+        -h | --help)
+            echo "Uso: sudo bash install.sh [--dev]"
+            echo "  (sem opção)  instala a versão estável (branch master)"
+            echo "  --dev        instala a versão de desenvolvimento (branch dev)"
+            exit 0
+            ;;
+        *)
+            echo "Opção desconhecida: $arg (use --dev ou --help)"
+            exit 1
+            ;;
+    esac
+done
 
 # Pastas de usuário onde pode haver instalação/alias da versão antiga
 if [ -n "${SYSUTIL_HOMES:-}" ]; then
@@ -94,9 +118,9 @@ sleep 0.3
 command -v curl >/dev/null 2>&1 || die "Curl nao encontrado. Instale: sudo apt install curl"
 
 # Passo 3: Baixar para uma pasta temporária (a instalação atual fica intacta)
-update_progress "Baixando do GitHub..."
+update_progress "Baixando do GitHub ($BRANCH)..."
 rm -rf "$NEW_DIR"
-git clone "$REPO_URL" "$NEW_DIR" --quiet 2>/dev/null || die "Falha ao clonar repositorio. A instalacao atual foi mantida."
+git clone --branch "$BRANCH" "$REPO_URL" "$NEW_DIR" --quiet 2>/dev/null || die "Falha ao baixar a versao '$BRANCH'. A instalacao atual foi mantida."
 
 # Passo 4: Trocar a instalação (com volta atrás se falhar)
 update_progress "Instalando em $INSTALL_DIR..."
@@ -148,6 +172,11 @@ echo -e "|          INSTALACAO CONCLUIDA!           |"
 echo -e "+------------------------------------------+${NC}"
 echo ""
 echo -e "Instalado em: ${BOLD}$INSTALL_DIR${NC}"
+if [ "$BRANCH" = "master" ]; then
+    echo -e "Versão:       ${BOLD}estável${NC} (master)"
+else
+    echo -e "Versão:       ${YELLOW}${BOLD}desenvolvimento${NC} ($BRANCH)"
+fi
 echo -e "Para abrir:    ${GREEN}sysutil${NC}  (pede sudo sozinho se precisar)"
 echo ""
 echo -e "Se o terminal ainda usar o alias antigo, abra um novo terminal"

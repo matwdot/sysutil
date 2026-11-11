@@ -21,7 +21,9 @@ if [ ! -d "$INSTALL_DIR/.git" ]; then
     exit 1
 fi
 
-echo "Atualizando SysUtil..."
+# Atualiza a mesma versão que foi instalada (master = estável, dev = desenvolvimento)
+BRANCH=$(git -C "$INSTALL_DIR" rev-parse --abbrev-ref HEAD 2>/dev/null || echo "?")
+echo "Atualizando SysUtil (versão: $BRANCH)..."
 if ! git -C "$INSTALL_DIR" pull --ff-only; then
     echo "ERRO: não foi possível atualizar (há alterações locais em $INSTALL_DIR ou falta rede)."
     echo "Para reinstalar do zero, rode o instalador."

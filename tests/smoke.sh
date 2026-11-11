@@ -174,20 +174,31 @@ if command -v git >/dev/null 2>&1; then
   mkdir -p "$REPO"
   (cd "$ROOT" && tar --exclude=.git --exclude=assets -cf - .) | (cd "$REPO" && tar -xf -)
   git -C "$REPO" init -q
+  # nome do branch fixo (o padrão do git varia); "symbolic-ref" funciona no git 2.17 do 18.04
+  git -C "$REPO" symbolic-ref HEAD refs/heads/master
   git -C "$REPO" add -A
   git -C "$REPO" -c user.name=t -c user.email=t@t commit -qm teste
+  git -C "$REPO" branch dev
 
   H="$WORK/home/pdv"
   mkdir -p "$H/sysutil"
   printf 'export A=1\n# SysUtil\nexport PATH="%s/sysutil:$PATH"\nalias sysutil='"'"'cd x && ./sysutil'"'"'\nexport B=2\n' "$H" >"$H/.bashrc"
 
   inst() {
+    local repo=$1
+    shift
     PATH="$FAKEBIN:$PATH" TERM=dumb \
       SYSUTIL_INSTALL_DIR="$WORK/opt/sysutil" SYSUTIL_BIN_LINK="$WORK/usr/bin/sysutil" \
-      SYSUTIL_REPO="$1" SYSUTIL_HOMES="$H" bash "$ROOT/install.sh" >"$WORK/inst.out" 2>&1
+      SYSUTIL_REPO="$repo" SYSUTIL_HOMES="$H" bash "$ROOT/install.sh" "$@" >"$WORK/inst.out" 2>&1
   }
+  inst "$REPO" --dev
+  check "--dev instala sem erro" "$?" 0
+  check "--dev instala o branch dev" "$(git -C "$WORK/opt/sysutil" rev-parse --abbrev-ref HEAD)" dev
+  inst "$REPO" --xyz
+  [[ $? -ne 0 ]] && ok "opção desconhecida é recusada" || fail "opção desconhecida é recusada"
   inst "$REPO"
   check "instala sem erro" "$?" 0
+  check "sem opção instala o branch master" "$(git -C "$WORK/opt/sysutil" rev-parse --abbrev-ref HEAD)" master
   [[ -x "$WORK/opt/sysutil/sysutil" ]] && ok "arquivos em /opt/sysutil" || fail "arquivos em /opt/sysutil"
   [[ -L "$WORK/usr/bin/sysutil" ]] && ok "comando sysutil criado" || fail "comando sysutil criado"
   grep -q sysutil "$H/.bashrc" && fail "alias antigo removido do .bashrc" "$(cat "$H/.bashrc")" || ok "alias antigo removido do .bashrc"

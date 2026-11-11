@@ -16,10 +16,18 @@ curl -fsSL https://raw.githubusercontent.com/matwdot/sysutil/master/install.sh |
 - ✅ Cria o comando `/usr/local/bin/sysutil`
 - ✅ Remove alias e PATH antigos do `.bashrc`/`.zshrc` (com cópia `.sysutil.bak`)
 
+### Versão de Desenvolvimento
+Para testar a versão em desenvolvimento (branch `dev`):
+```bash
+curl -fsSL https://raw.githubusercontent.com/matwdot/sysutil/master/install.sh | sudo bash -s -- --dev
+```
+Para voltar à versão estável, rode o instalador de novo sem `--dev`.
+
 ### Atualizar Instalação Existente
 ```bash
 curl -fsSL https://raw.githubusercontent.com/matwdot/sysutil/master/update.sh | sudo bash
 ```
+O atualizador mantém a versão instalada (estável ou desenvolvimento).
 
 ### Executar Após Instalação
 Após a instalação, você pode executar de qualquer lugar (pede `sudo` sozinho se não for root):

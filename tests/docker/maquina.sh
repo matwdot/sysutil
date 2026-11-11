@@ -64,8 +64,10 @@ instalar() {
     rm -rf /tmp/repo && mkdir -p /tmp/repo
     (cd /src && tar --exclude=.git --exclude=assets -cf - .) | (cd /tmp/repo && tar -xf -)
     git -C /tmp/repo init -q
+    git -C /tmp/repo symbolic-ref HEAD refs/heads/master
     git -C /tmp/repo add -A
     git -C /tmp/repo -c user.name=teste -c user.email=teste@local commit -qm "arquivos atuais"
+    git -C /tmp/repo branch dev
     SYSUTIL_REPO=/tmp/repo bash /tmp/repo/install.sh
   '
 }
