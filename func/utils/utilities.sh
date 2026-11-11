@@ -201,8 +201,9 @@ backup_file() {
     return 1
   fi
   
-  local timestamp=$(date +%Y%m%d_%H%M%S)
-  local filename=$(basename "$file")
+  local timestamp filename
+  timestamp=$(date +%Y%m%d_%H%M%S)
+  filename=$(basename "$file")
   local backup_path="${backup_dir}/${filename}.backup_${timestamp}"
   
   if cp "$file" "$backup_path"; then
@@ -239,7 +240,8 @@ log_message() {
   local level=$1
   local message=$2
   local log_file="${3:-/var/log/sysutil.log}"
-  local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
+  local timestamp
+  timestamp=$(date '+%Y-%m-%d %H:%M:%S')
   
   echo "[${timestamp}] [${level}] ${message}" >> "$log_file" 2>/dev/null
 }

@@ -42,7 +42,9 @@ create_alias() {
   done
 
   # Recarrega os arquivos de configuração
+  # shellcheck source=/dev/null
   source ~/.bashrc 2>/dev/null
+  # shellcheck source=/dev/null
   source ~/.zshrc 2>/dev/null
 }
 

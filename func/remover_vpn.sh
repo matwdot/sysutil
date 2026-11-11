@@ -24,19 +24,38 @@ remover_vpn() {
     else
       info_msg "Iniciando..."
       warning_msg "Realizando o backup da chave, se houver."
-      
-      if ! sudo cat /etc/wnbtlscli/registry > chave.txt; then
-        error_msg "Erro ao salvar a chave."
+
+      local registry="/etc/wnbtlscli/registry"
+      local chave
+      chave="$HOME/chave_vpn_$(date +%Y%m%d_%H%M%S).txt"
+      if sudo test -f "$registry"; then
+        # install -m 600: copia como root e deixa a chave legível só pelo dono
+        if sudo install -m 600 "$registry" "$chave" && [[ -s "$chave" ]]; then
+          info_msg "Chave salva em: $chave"
+        else
+          error_msg "Erro ao salvar a chave. Remoção cancelada para não perdê-la."
+          return 1
+        fi
+      else
+        warning_msg "Nenhuma chave encontrada em $registry."
       fi
-      
+
       warning_msg "Removendo a VPN"
-      if sudo dpkg --purge wnbtlscli && sudo apt remove -y wnbmonitor && sudo apt remove -y wnbtlscli; then
+      local pacote falhou=0
+      for pacote in wnbtlscli wnbmonitor; do
+        if dpkg -s "$pacote" > /dev/null 2>&1; then
+          sudo dpkg --purge "$pacote" || falhou=1
+        fi
+      done
+
+      if [[ $falhou -eq 0 ]]; then
         warning_msg "Apagando as pastas"
         sudo rm -rf /etc/wnbtlscli /var/log/wnb
         sleep 2
         success_msg "VPN removida com sucesso. Por favor, reinicie o computador!"
       else
         error_msg "Erro ao remover os pacotes da VPN."
+        return 1
       fi
     fi
   else

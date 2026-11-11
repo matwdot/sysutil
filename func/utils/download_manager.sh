@@ -84,7 +84,8 @@ download_file() {
     return 0
 }
 
-# Baixar DocGate V5
+# Baixar DocGate V5 ($1 opcional = arquivo de configuração)
+# shellcheck disable=SC2120
 download_docgate() {
     local config_file="${1:-config/downloads.conf}"
     

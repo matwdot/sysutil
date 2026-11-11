@@ -1,8 +1,11 @@
 #!/bin/bash
 #
 # SysUtil - Instalador v7.0
-# Uso: curl -fsSL https://raw.githubusercontent.com/matwdot/sysutil/master/install.sh | bash
+# Uso: curl -fsSL https://raw.githubusercontent.com/matwdot/sysutil/master/install.sh | sudo bash
 #
+
+# Instala em /opt/sysutil (para todos os usuários) e cria o comando
+# /usr/local/bin/sysutil. Precisa de root.
 
 set -e
 
@@ -14,10 +17,21 @@ CYAN='\033[36m'
 BOLD='\033[1m'
 NC='\033[0m'
 
-INSTALL_DIR="$HOME/sysutil"
+INSTALL_DIR="${SYSUTIL_INSTALL_DIR:-/opt/sysutil}"
+BIN_LINK="${SYSUTIL_BIN_LINK:-/usr/local/bin/sysutil}"
+REPO_URL="${SYSUTIL_REPO:-https://github.com/matwdot/sysutil.git}"
+NEW_DIR="${INSTALL_DIR}.new"
+OLD_DIR="${INSTALL_DIR}.old"
 TOTAL_STEPS=7
 CURRENT_STEP=0
 BAR_WIDTH=40
+
+# Pastas de usuário onde pode haver instalação/alias da versão antiga
+if [ -n "${SYSUTIL_HOMES:-}" ]; then
+    HOMES="$SYSUTIL_HOMES"
+else
+    HOMES="/root $(ls -d /home/* 2>/dev/null | tr '\n' ' ')"
+fi
 
 # Limpa linha e mostra barra de progresso
 update_progress() {
@@ -44,11 +58,19 @@ status_msg() {
 # Erro fatal
 die() {
     printf "\n${RED}ERRO:${NC} %s\n" "$1"
+    rm -rf "$NEW_DIR"
     exit 1
 }
 
-# Header compacto
-clear
+# Precisa de root (a instalação vai para /opt)
+if [ "$(id -u)" -ne 0 ]; then
+    printf "${RED}ERRO:${NC} execute como root:\n"
+    echo "  curl -fsSL https://raw.githubusercontent.com/matwdot/sysutil/master/install.sh | sudo bash"
+    exit 1
+fi
+
+# Header compacto (clear falha sem terminal, ex.: TERM=dumb; não pode parar o set -e)
+clear 2>/dev/null || true
 echo -e "${BOLD}${CYAN}"
 echo "+------------------------------------------+"
 echo "|         SysUtil Instalador v7.0          |"
@@ -71,35 +93,49 @@ update_progress "Verificando curl..."
 sleep 0.3
 command -v curl >/dev/null 2>&1 || die "Curl nao encontrado. Instale: sudo apt install curl"
 
-# Passo 3: Remover instalação anterior
-update_progress "Preparando diretorio..."
-sleep 0.3
-[ -d "$INSTALL_DIR" ] && rm -rf "$INSTALL_DIR"
-
-# Passo 4: Clonar repositório
+# Passo 3: Baixar para uma pasta temporária (a instalação atual fica intacta)
 update_progress "Baixando do GitHub..."
-git clone https://github.com/matwdot/sysutil.git "$INSTALL_DIR" --quiet 2>/dev/null || die "Falha ao clonar repositorio"
+rm -rf "$NEW_DIR"
+git clone "$REPO_URL" "$NEW_DIR" --quiet 2>/dev/null || die "Falha ao clonar repositorio. A instalacao atual foi mantida."
+
+# Passo 4: Trocar a instalação (com volta atrás se falhar)
+update_progress "Instalando em $INSTALL_DIR..."
+rm -rf "$OLD_DIR"
+if [ -d "$INSTALL_DIR" ]; then
+    mv "$INSTALL_DIR" "$OLD_DIR" || die "Nao foi possivel mover a instalacao atual."
+fi
+if ! mv "$NEW_DIR" "$INSTALL_DIR"; then
+    [ -d "$OLD_DIR" ] && mv "$OLD_DIR" "$INSTALL_DIR"
+    die "Falha ao instalar. A instalacao anterior foi restaurada."
+fi
+rm -rf "$OLD_DIR"
 
 # Passo 5: Configurar permissões
 update_progress "Configurando permissoes..."
-sleep 0.3
-cd "$INSTALL_DIR"
-chmod +x *.sh 2>/dev/null || true
-find . -name "*.sh" -exec chmod +x {} \; 2>/dev/null || true
+find "$INSTALL_DIR" -name "*.sh" -exec chmod +x {} \; 2>/dev/null || true
+chmod +x "$INSTALL_DIR/sysutil" 2>/dev/null || true
 
-# Passo 6: Configurar PATH e alias
+# Passo 6: Criar o comando e limpar alias/PATH da versão antiga
 update_progress "Configurando sistema..."
-sleep 0.3
-sed -i '/# SysUtil/d' "$HOME/.bashrc" 2>/dev/null || true
-sed -i '/export PATH.*sysutil/d' "$HOME/.bashrc" 2>/dev/null || true
-sed -i '/alias sysutil/d' "$HOME/.bashrc" 2>/dev/null || true
+mkdir -p "$(dirname "$BIN_LINK")"
+ln -sf "$INSTALL_DIR/sysutil" "$BIN_LINK" || die "Falha ao criar o comando $BIN_LINK"
 
-cat >> "$HOME/.bashrc" << EOF
-
-# SysUtil
-export PATH="$INSTALL_DIR:\$PATH"
-alias sysutil='cd $INSTALL_DIR && ./sysutil.sh'
-EOF
+OLD_INSTALLS=""
+for h in $HOMES; do
+    for rc in "$h/.bashrc" "$h/.zshrc"; do
+        [ -f "$rc" ] || continue
+        if grep -qE '^# SysUtil|^# Alias sysutil|^# Adiciona sysutil|export PATH=.*sysutil|^alias sysutil=' "$rc" 2>/dev/null; then
+            # guarda uma cópia (.sysutil.bak) antes de remover as linhas antigas
+            sed -i.sysutil.bak \
+                -e '/^# SysUtil/d' \
+                -e '/^# Alias sysutil/d' \
+                -e '/^# Adiciona sysutil/d' \
+                -e '/export PATH=.*sysutil/d' \
+                -e '/^alias sysutil=/d' "$rc" 2>/dev/null || true
+        fi
+    done
+    [ -d "$h/sysutil" ] && OLD_INSTALLS="$OLD_INSTALLS $h/sysutil"
+done
 
 # Passo 7: Finalizar
 update_progress "Concluido!"
@@ -111,10 +147,14 @@ echo -e "${GREEN}+------------------------------------------+"
 echo -e "|          INSTALACAO CONCLUIDA!           |"
 echo -e "+------------------------------------------+${NC}"
 echo ""
-echo -e "É a ${BOLD}primeira instalação?${NC}"
-echo -e "1. Execute: ${BOLD}source ~/.bashrc${NC}"
-echo -e "2. Depois:  ${BOLD}sysutil${NC}"
+echo -e "Instalado em: ${BOLD}$INSTALL_DIR${NC}"
+echo -e "Para abrir:    ${GREEN}sysutil${NC}  (pede sudo sozinho se precisar)"
 echo ""
-echo -e "Caso contrário:"
-echo -e "Execute: ${GREEN}sysutil${NC}"
+echo -e "Se o terminal ainda usar o alias antigo, abra um novo terminal"
+echo -e "ou execute: ${BOLD}unalias sysutil; hash -r${NC}"
+if [ -n "$OLD_INSTALLS" ]; then
+    echo ""
+    echo -e "${YELLOW}Pastas antigas sem uso (pode apagar depois de conferir):${NC}"
+    for d in $OLD_INSTALLS; do echo "  $d"; done
+fi
 echo ""

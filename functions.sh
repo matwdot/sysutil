@@ -52,6 +52,11 @@ atualizar_syspdv() {
   if confirm_action "Deseja atualizar o SysPDV PDV?"; then
     info_msg "Iniciando a atualização do SysPDV"
     fazer_backup_fdb
+    # 0 = ok, 2 = usuário dispensou o backup, 1 = falhou
+    if [[ $? -eq 1 ]] && ! confirm_action "O backup falhou. Continuar a atualização mesmo assim?" "n"; then
+      error_msg "Atualização cancelada."
+      return 1
+    fi
     baixar_build
   else
     error_msg "Instalação cancelada."

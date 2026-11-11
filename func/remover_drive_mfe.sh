@@ -16,8 +16,9 @@
 # Baixa e instala o Driver MFe
 remover_drive_mfe() {
   if confirm_action "Deseja remover o Drive MFe?"; then
-    if cd /opt/sefaz/cco/; then
-      if sudo ./remove-driver.sh; then
+    if [[ -d /opt/sefaz/cco ]]; then
+      # Subshell: o cd não pode vazar para o resto da sessão
+      if (cd /opt/sefaz/cco/ && sudo ./remove-driver.sh); then
         sudo rm -rf /opt/sefaz
         success_msg "Driver MFe removido com sucesso."
         sleep 5

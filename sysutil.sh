@@ -2,10 +2,10 @@
 #
 # sysutil.sh - Script de utilitários para o SysPDV PDV em Linux
 #
-# Versão: 6.0
+# Versão: 7.0
 # Autor: Matheus Wesley
 # GitHub: https://matheuswesley.github.io/devlinks
-# GitHub Projeto: https://matwdot.github.
+# GitHub Projeto: https://matwdot.github.io
 # Licença: MIT
 #
 # *************************************************************
@@ -13,174 +13,148 @@
 # ---------------------
 # Importações
 # ---------------------
-. ./functions.sh
-. ./colors.sh
-. ./func/utils/create_alias.sh
+SCRIPT_PATH="$(readlink -f "${BASH_SOURCE[0]}")"
 
-# ---------------------
-# Função para capturar entrada do teclado
-# ---------------------
-get_input() {
-  read -s -n 1 key
-  if [[ $key == $'\x1b' ]]; then
-    read -s -n 2 key
+# Precisa de root: se não for, reexecuta com sudo antes de carregar qualquer coisa
+if [[ "$(id -u)" -ne 0 ]]; then
+  echo "SysUtil precisa ser executado como root."
+  if command -v sudo >/dev/null 2>&1; then
+    echo "Reexecutando com sudo..."
+    exec sudo bash "$SCRIPT_PATH" "$@"
   fi
-  echo "$key"
-}
+  echo "ERRO: sudo não encontrado. Execute 'su -' (ou 'sudo su') e rode o sysutil de novo." >&2
+  exit 1
+fi
 
-# Função de exibição do menu interativo
-show_menu() {
-  local highlight=$1
-  shift
-  local options=("$@")
-
-  clear
-  echo "------------------------------------------"
-  echo -e "${BOLD}           SysUtil v7.0 beta${NC}"
-  echo "------------------------------------------"
-
-  for i in "${!options[@]}"; do
-    if [[ $i -eq $highlight ]]; then
-      [[ "${options[$i]}" == "Sair" ]] && echo -e "${RED}✘ ${options[$i]}${NC}" || echo -e "${GREEN}➜ ${options[$i]}${NC}"
-    else
-      echo "  ${options[$i]}"
+# Terminal desconhecido neste sistema (ex.: xterm-ghostty, xterm-kitty via SSH):
+# sem isso o "clear" falha e o menu fica desenhado um embaixo do outro.
+if ! tput -T "${TERM:-dumb}" clear >/dev/null 2>&1; then
+  for t in xterm-256color xterm linux; do
+    if tput -T "$t" clear >/dev/null 2>&1; then
+      export TERM="$t"
+      break
     fi
   done
+fi
 
-  echo "------------------------------------------"
-  echo -e "Navegue com ${BOLD}↑${NC}/${BOLD}↓${NC} e selecione com ${BOLD}Enter${NC}."
-  echo "------------------------------------------"
-}
+# Roda a partir da pasta do script, de qualquer lugar (alias, PATH ou link)
+cd "$(dirname "$SCRIPT_PATH")" || exit 1
 
-navigate_menu() {
-  local options=("$@")
-  local current_selection=0
+. ./colors.sh
+. ./functions.sh
 
-  while true; do
-    show_menu "$current_selection" "${options[@]}"
-    case $(get_input) in
-    '[A') ((current_selection > 0)) && ((current_selection--)) ;;
-    '[B') ((current_selection < ${#options[@]} - 1)) && ((current_selection++)) ;;
-    '') return $current_selection ;;
-    '0' | 'q')
-      clear
-      exit 0
-      ;;
-    esac
-  done
-}
-
-# Função para menu de SysPDV PDV
+# ---------------------
+# Menu de SysPDV PDV
+# ---------------------
 menu_syspdv() {
-  local syspdv_options=(
+  local options=(
     "Instalar SysPDV PDV"
     "Atualizar SysPDV PDV"
     "Voltar"
   )
-  while true; do
-    navigate_menu "${syspdv_options[@]}"
-    case $? in
-    0)
-      clear
-      instalar_syspdv
-      echo -e "${GREEN}Instalação concluída!${NC}"
-      ;;
-    1)
-      clear
-      atualizar_syspdv
-      echo -e "${GREEN}Atualização concluída!${NC}"
-      ;;
-    2) return ;;
-    esac
-  done
+  
+  local functions=(
+    "instalar_syspdv"
+    "atualizar_syspdv"
+  )
+  
+  submenu "SysPDV PDV" "${options[@]}" -- "${functions[@]}"
 }
 
-# Função para menu de VPN
+# ---------------------
+# Menu de VPN
+# ---------------------
 menu_vpn() {
-  local vpn_options=(
+  local options=(
     "Instalar VPN"
     "Remover VPN"
     "Voltar"
   )
-  while true; do
-    navigate_menu "${vpn_options[@]}"
-    case $? in
-    0)
-      clear
-      instalar_vpn
-      echo -e "${GREEN}VPN instalada com sucesso!${NC}"
-      ;;
-    1)
-      clear
-      remover_vpn
-      echo -e "${GREEN}VPN removida com sucesso!${NC}"
-      ;;
-    2) return ;;
-    esac
-  done
+  
+  local functions=(
+    "instalar_vpn"
+    "remover_vpn"
+  )
+  
+  submenu "VPN Comnect" "${options[@]}" -- "${functions[@]}"
 }
 
-# Função para menu de MFe
+# ---------------------
+# Menu de MFe
+# ---------------------
 menu_mfe() {
-  local mfe_options=(
+  local options=(
     "Remover Driver MFe"
     "Voltar"
   )
+  
+  local functions=(
+    "remover_drive_mfe"
+  )
+  
+  submenu "MFe/DocGate" "${options[@]}" -- "${functions[@]}"
+}
+
+# ---------------------
+# Menu principal
+# ---------------------
+main() {
+  local options=(
+    "SysPDV PDV"
+    "VPN Comnect"
+    "MFe/DocGate"
+    "Configurar Periféricos"
+    "Configurar Biométrico"
+    "Limitar Consumo Tec55"
+    "Transferência de Arquivos via SCP"
+    "Manutenção via banco"
+    "Sair"
+  )
+  
+  local functions=(
+    "menu_syspdv"
+    "menu_vpn"
+    "menu_mfe"
+    "configurar_perifericos"
+    "configurar_biometria"
+    "limitar_consumo"
+    "transferencia"
+    "db_access"
+    "exit_script"
+  )
+  
+  local exit_index=$((${#options[@]} - 1))
+  
   while true; do
-    navigate_menu "${mfe_options[@]}"
-    case $? in
-    0)
+    select_menu "Menu principal" "${options[@]}"
+    local result=$?
+    
+    # Escolheu Sair (ou q/ESC)
+    if [[ $result -eq $exit_index ]]; then
       clear
-      remover_drive_mfe
-      echo -e "${GREEN}MFe removido com sucesso!${NC}"
-      ;;
-    1) return ;;
-    esac
+      exit 0
+    fi
+    
+    # Verifica se o índice é válido
+    if [[ $result -ge 0 && $result -lt ${#functions[@]} ]]; then
+      local func="${functions[$result]}"
+      
+      # Funções de submenu não precisam de clear/pause
+      if [[ "$func" == menu_* ]]; then
+        $func
+      else
+        clear
+        $func
+        read -r -p "Pressione Enter para continuar..."
+      fi
+    else
+      echo -e "${RED}Opção inválida!${NC}"
+      sleep 1
+    fi
   done
 }
 
-# Menu principal
-options=(
-  "SysPDV PDV"
-  "VPN Comnect"
-  "MFe/DocGate"
-  "Configurar Periféricos"
-  "Configurar Biométrico"
-  "Limitar Consumo Tec55"
-  "Transferência de Arquivos via SCP"
-  "Sair"
-)
-
-while true; do
-  navigate_menu "${options[@]}"
-  case $? in
-  0) menu_syspdv ;;
-  1) menu_vpn ;;
-  2) menu_mfe ;;
-  3)
-    clear
-    configurar_perifericos
-    ;;
-  4)
-    clear
-    configurar_biometria
-    ;;
-  5)
-    clear
-    limitar_consumo
-    ;;
-  6)
-    clear
-    transferencia
-    ;;
-  7)
-    clear
-    exit 0
-    ;;
-  *)
-    echo -e "${RED}Opção inválida!${NC}"
-    sleep 1
-    clear
-    ;;
-  esac
-done
+# ---------------------
+# Executa o menu principal
+# ---------------------
+main

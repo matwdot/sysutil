@@ -20,15 +20,17 @@ limitar_consumo() {
     # Atualizar pacotes e instalar cpulimit
     info_msg "Atualizando pacotes e instalando cpulimit..."
     sleep 2
-    if ! sudo apt update && sudo apt install -y cpulimit; then
+    if ! { sudo apt update && sudo apt install -y cpulimit; }; then
       error_msg "Erro ao atualizar pacotes ou instalar o cpulimit."
+      return 1
     fi
 
     # Dar permissão de execução aos arquivos e copiá-los
     warning_msg "Aplicando permissões e copiando arquivos..."
     sleep 2
-    if ! sudo chmod +x -R dep/tec55/* && sudo cp -R dep/tec55/* /usr/local/bin; then
+    if ! { sudo chmod +x -R dep/tec55/* && sudo cp -R dep/tec55/* /usr/local/bin; }; then
       error_msg "Erro ao copiar os arquivos..."
+      return 1
     fi
 
     # Aplicar permissões ao diretório /opt/Gertec55
@@ -38,6 +40,7 @@ limitar_consumo() {
       sleep 2
     else
       error_msg "Erro ao aplicar permissões ao diretório /opt/Gertec55."
+      return 1
     fi
 
     # Mensagem de sucesso
