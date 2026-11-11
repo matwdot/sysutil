@@ -2,7 +2,7 @@
 #
 # sysutil.sh - Script de utilitários para o SysPDV PDV em Linux
 #
-# Versão: 5.2
+# Versão: 8.0
 # Autor: Matheus Wesley
 # GitHub: https://matheuswesley.github.io/devlinks
 # GitHub Projeto: https://matwdot.github.
@@ -13,7 +13,17 @@
 #
 # **************************************************************
 
-# Instala VPN
+# Import utilities if not loaded
+if [[ -z "$(type -t error_msg)" ]]; then
+  SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  # shellcheck source=utils/utilities.sh
+  source "${SCRIPT_DIR}/utils/utilities.sh" || {
+    echo "ERRO: Não foi possível carregar utilities.sh"
+    exit 1
+  }
+fi
+
+# Remove a VPN (guarda a chave antes de apagar)
 remover_vpn() {
   if confirm_action "Deseja remover a VPN?"; then
     info_msg "Iniciando a remoção da VPN..."
@@ -26,8 +36,9 @@ remover_vpn() {
       warning_msg "Realizando o backup da chave, se houver."
 
       local registry="/etc/wnbtlscli/registry"
-      local chave
-      chave="$HOME/chave_vpn_$(date +%Y%m%d_%H%M%S).txt"
+      local key_dir="$HOME/.sysutil" chave
+      chave="$key_dir/chave_vpn_$(date +%Y%m%d_%H%M%S).txt"
+      mkdir -p "$key_dir" && chmod 700 "$key_dir"
       if sudo test -f "$registry"; then
         # install -m 600: copia como root e deixa a chave legível só pelo dono
         if sudo install -m 600 "$registry" "$chave" && [[ -s "$chave" ]]; then

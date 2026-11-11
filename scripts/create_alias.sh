@@ -17,7 +17,7 @@
 
 create_alias() {
   ALIAS_NAME="sysutil"
-  ALIAS_CMD="(cd ~/sysutil && ./sysutil.sh)"
+  ALIAS_CMD="(cd ~/sysutil && ./sysutil)"
   ALIAS_LINE="alias $ALIAS_NAME=\"$ALIAS_CMD\""
   PATH_LINE='export PATH="$PATH:$HOME/sysutil"'
 

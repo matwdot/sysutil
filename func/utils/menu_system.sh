@@ -2,14 +2,14 @@
 #
 # menu_system.sh - Sistema de menus para SysUtil
 #
-# Versão: 7.0
+# Versão: 8.0
 # Autor: Matheus Wesley
 # GitHub: https://matheuswesley.github.io/devlinks
 # GitHub Projeto: https://matwdot.github.io
 # Licença: MIT
 #
 # Este arquivo contém todas as funções relacionadas ao sistema de menus
-# (menu em Bash puro, igual no Ubuntu 18.04 e 22.04)
+# (menu em Bash puro, igual no Ubuntu 18.04 e 22.04; sem fzf)
 #
 # *************************************************************
 
@@ -40,7 +40,8 @@ get_input() {
 # ---------------------
 # Banner da marca (fonte "poison", centralizado na moldura do menu)
 # ---------------------
-SYSUTIL_VERSION="${SYSUTIL_VERSION:-7.0 beta}"
+# Versão vem de config/version.sh ($VERSION), a fonte única
+SYSUTIL_VERSION="${VERSION:-8.0.0}"
 MENU_WIDTH=64
 
 show_banner() {

@@ -2,7 +2,7 @@
 #
 # sysutil.sh - Script de utilitários para o SysPDV PDV em Linux
 #
-# Versão: 7.0
+# Versão: 8.0
 # Autor: Matheus Wesley
 # GitHub: https://matheuswesley.github.io/devlinks
 # GitHub Projeto: https://matwdot.github.
@@ -23,14 +23,14 @@
 . func/configurar_biometria.sh
 . func/baixar_build.sh
 . func/limitar_consumo.sh
-# . func/requisitos.sh
 . func/transferencia.sh
-. func/db.sh
 . func/fazer_backup_fdb.sh
+. func/remover_docgate.sh
 
 # Utilitários
 . func/utils/utilities.sh
 . func/utils/menu_system.sh
+. func/utils/peripherals.sh
 
 # FUNÇÕES
 

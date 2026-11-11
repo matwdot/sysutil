@@ -2,7 +2,7 @@
 #
 # sysutil.sh - Script de utilitários para o SysPDV PDV em Linux
 #
-# Versão: 5.2
+# Versão: 8.0
 # Autor: Matheus Wesley
 # GitHub: https://matheuswesley.github.io/devlinks
 # GitHub Projeto: https://matwdot.github.
@@ -13,9 +13,17 @@
 #
 # **************************************************************
 
-# Transferencia de arquvos via SCP
+# Import utilities if not loaded
+if [[ -z "$(type -t error_msg)" ]]; then
+  SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  # shellcheck source=utils/utilities.sh
+  source "${SCRIPT_DIR}/utils/utilities.sh" || {
+    echo "ERRO: Não foi possível carregar utilities.sh"
+    exit 1
+  }
+fi
 
-#!/bin/bash
+# Transferencia de arquivos via SCP
 
 # Função de transferência de arquivos
 transferencia() {
@@ -28,7 +36,11 @@ transferencia() {
     # Verificar se o host foi informado
     if [[ -z "$host" ]]; then
       error_msg "Erro: o IP do Host não foi informado."
-      sleep 2
+      return 1
+    fi
+
+    if ! is_valid_ip "$host"; then
+      error_msg "IP inválido: $host"
       return 1
     fi
 
@@ -38,7 +50,6 @@ transferencia() {
     # Verificar se o arquivo/pasta foi informado
     if [[ -z "$file" ]]; then
       error_msg "Erro: a pasta ou arquivo não foi informado."
-      sleep 2
       return 1
     fi
 
@@ -48,7 +59,6 @@ transferencia() {
     # Verificar se o diretório local foi informado
     if [[ -z "$dir_local" ]]; then
       error_msg "Erro: o diretório local não foi informado."
-      sleep 2
       return 1
     fi
 
@@ -59,7 +69,6 @@ transferencia() {
       read -r -p ""
     else
       error_msg "Erro ao realizar a cópia do arquivo/pasta '$file'."
-      sleep 2
     fi
   else
     info_msg "Transferência de arquivos cancelada."

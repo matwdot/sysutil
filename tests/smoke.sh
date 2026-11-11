@@ -76,7 +76,7 @@ echo
 # ---------------------------------------------------------------
 echo "1. Sintaxe"
 cd "$ROOT" || exit 1
-for f in sysutil sysutil.sh functions.sh colors.sh install.sh update.sh func/*.sh func/utils/*.sh; do
+for f in sysutil functions.sh colors.sh install.sh update.sh config/*.sh func/*.sh func/utils/*.sh scripts/*.sh; do
   if bash -n "$f" 2>"$WORK/err"; then ok "$f"; else fail "$f" "$(cat "$WORK/err")"; fi
 done
 
@@ -126,8 +126,8 @@ echo "sudo \$*" > "$WORK/sudo_call"
 EOF
 chmod +x "$NOROOT/id" "$NOROOT/sudo"
 rm -f "$WORK/sudo_call"
-PATH="$NOROOT:$PATH" bash "$ROOT/sysutil.sh" </dev/null >/dev/null 2>&1
-grep -q "sysutil.sh" "$WORK/sudo_call" 2>/dev/null && ok "não root reabre com sudo" || fail "não root reabre com sudo"
+PATH="$NOROOT:$PATH" bash "$ROOT/sysutil" </dev/null >/dev/null 2>&1
+grep -q "sysutil" "$WORK/sudo_call" 2>/dev/null && ok "não root reabre com sudo" || fail "não root reabre com sudo"
 
 # ---------------------------------------------------------------
 echo "5. Funções"
@@ -147,25 +147,23 @@ check "backup gera 2 arquivos com data" "${#backups[@]}" 2
 
 # limitar_consumo: cpulimit é instalado e arquivos copiados
 : >"$WORK/calls"
-(cd "$ROOT" && PATH="$FAKEBIN:$PATH" bash -c "$stubs; . func/limitar_consumo.sh; limitar_consumo" >/dev/null)
+(cd "$ROOT" && PATH="$FAKEBIN:$PATH" bash -c ". ./colors.sh; . func/utils/utilities.sh; $stubs; . func/limitar_consumo.sh; limitar_consumo" >/dev/null)
 grep -q "install -y cpulimit" "$WORK/calls" && ok "limitar_consumo instala o cpulimit" || fail "limitar_consumo instala o cpulimit"
 grep -q "cp -R" "$WORK/calls" && ok "limitar_consumo copia os arquivos" || fail "limitar_consumo copia os arquivos"
 
-# VPN pela versão do Ubuntu
-vpn_calls() {
-  printf 'CHAVE\n' >"$WORK/key"
-  : >"$WORK/calls"
-  (cd "$ROOT" && PATH="$FAKEBIN:$PATH" SYSUTIL_OS_RELEASE="$1" bash -c "$stubs; . func/instalar_vpn.sh; instalar_vpn" <"$WORK/key" >/dev/null)
-  cat "$WORK/calls"
-}
-printf 'ID=ubuntu\nVERSION_ID="18.04"\n' >"$WORK/u18"
-printf 'ID=ubuntu\nVERSION_ID="22.04"\n' >"$WORK/u22"
-vpn_calls "$WORK/u18" | grep -q "dpkg -i dep/wnbtlscli_2_5_1/wnbtlscli_2.5.1_i386.deb" && ok "VPN 18.04 usa o .deb i386" || fail "VPN 18.04 usa o .deb i386"
-vpn_calls "$WORK/u18" | grep -q "wnbupdate -k CHAVE" && ok "VPN 18.04 registra com wnbupdate" || fail "VPN 18.04 registra com wnbupdate"
-vpn_calls "$WORK/u22" | grep -q "wnbinstall.sh -i" && ok "VPN 22.04 usa o wnbinstall.sh" || fail "VPN 22.04 usa o wnbinstall.sh"
-vpn_calls "$WORK/u22" | grep -q "wnbmonitor -k CHAVE" && ok "VPN 22.04 registra com wnbmonitor" || fail "VPN 22.04 registra com wnbmonitor"
-if [[ -r /etc/os-release ]]; then
-  echo "  info - neste sistema, ubuntu_version = '$(cd "$ROOT" && bash -c '. func/instalar_vpn.sh; ubuntu_version')'"
+# VPN (v8.0): roda o simple-update.sh, que escolhe o .deb pela arquitetura
+: >"$WORK/calls"
+printf 'CHAVE\n' >"$WORK/key"
+(cd "$ROOT" && PATH="$FAKEBIN:$PATH" bash -c "$stubs; . func/instalar_vpn.sh; instalar_vpn" <"$WORK/key" >/dev/null 2>&1)
+grep -q "sudo bash $ROOT/dep/wnbtlscli_2_5_1/simple-update.sh $ROOT/dep/wnbtlscli_2_5_1" "$WORK/calls" \
+  && ok "VPN chama o simple-update.sh com a pasta dos pacotes" || fail "VPN chama o simple-update.sh com a pasta dos pacotes" "$(cat "$WORK/calls")"
+if [[ ! -f /etc/wnbtlscli/registry ]]; then
+  grep -q "wnbupdate -k CHAVE" "$WORK/calls" && ok "VPN registra a chave com wnbupdate" || fail "VPN registra a chave com wnbupdate"
+fi
+# Registro falhou: não pode dizer "sucesso"
+if [[ ! -f /etc/wnbtlscli/registry ]]; then
+  out=$(cd "$ROOT" && PATH="$FAKEBIN:$PATH" bash -c "$stubs; success_msg(){ echo SUCESSO; }; sudo(){ [[ \$1 == wnbupdate ]] && return 1; return 0; }; . func/instalar_vpn.sh; instalar_vpn; echo rc=\$?" <"$WORK/key" 2>/dev/null)
+  [[ "$out" != *SUCESSO* && "$out" == *rc=1* ]] && ok "VPN não diz sucesso se o registro falhar" || fail "VPN não diz sucesso se o registro falhar" "$out"
 fi
 
 # ---------------------------------------------------------------
@@ -181,7 +179,7 @@ if command -v git >/dev/null 2>&1; then
 
   H="$WORK/home/pdv"
   mkdir -p "$H/sysutil"
-  printf 'export A=1\n# SysUtil\nexport PATH="%s/sysutil:$PATH"\nalias sysutil='"'"'cd x && ./sysutil.sh'"'"'\nexport B=2\n' "$H" >"$H/.bashrc"
+  printf 'export A=1\n# SysUtil\nexport PATH="%s/sysutil:$PATH"\nalias sysutil='"'"'cd x && ./sysutil'"'"'\nexport B=2\n' "$H" >"$H/.bashrc"
 
   inst() {
     PATH="$FAKEBIN:$PATH" TERM=dumb \
@@ -190,7 +188,7 @@ if command -v git >/dev/null 2>&1; then
   }
   inst "$REPO"
   check "instala sem erro" "$?" 0
-  [[ -x "$WORK/opt/sysutil/sysutil.sh" ]] && ok "arquivos em /opt/sysutil" || fail "arquivos em /opt/sysutil"
+  [[ -x "$WORK/opt/sysutil/sysutil" ]] && ok "arquivos em /opt/sysutil" || fail "arquivos em /opt/sysutil"
   [[ -L "$WORK/usr/bin/sysutil" ]] && ok "comando sysutil criado" || fail "comando sysutil criado"
   grep -q sysutil "$H/.bashrc" && fail "alias antigo removido do .bashrc" "$(cat "$H/.bashrc")" || ok "alias antigo removido do .bashrc"
   [[ -f "$H/.bashrc.sysutil.bak" ]] && ok "cópia .bashrc.sysutil.bak criada" || fail "cópia .bashrc.sysutil.bak criada"
@@ -222,16 +220,20 @@ if [[ -f /etc/sysutil-test-image && "$(id -u)" -eq 0 ]]; then
 
   # Ambiente esperado
   if [[ -n "${SYSUTIL_EXPECT_UBUNTU:-}" ]]; then
-    check "Ubuntu detectado pela VPN" \
-      "$(cd "$ROOT" && bash -c '. func/instalar_vpn.sh; ubuntu_version')" "$SYSUTIL_EXPECT_UBUNTU"
+    check "Ubuntu da máquina" "$(. /etc/os-release && echo "$VERSION_ID")" "$SYSUTIL_EXPECT_UBUNTU"
     case "$SYSUTIL_EXPECT_UBUNTU" in
       18.04) check "arquitetura 32 bits" "$(uname -m)" i686 ;;
       22.04) check "arquitetura 64 bits" "$(uname -m)" x86_64 ;;
     esac
   fi
-  [[ -f "$ROOT/dep/wnbtlscli_2_5_1/wnbtlscli_2.5.1_i386.deb" ]] \
-    && ok "pacote VPN i386 presente em dep/" || fail "pacote VPN i386 presente em dep/"
-  [[ -f "$ROOT/dep/wnbinstall.sh" ]] && ok "dep/wnbinstall.sh presente" || fail "dep/wnbinstall.sh presente"
+  # O simple-update.sh escolhe wnbtlscli_2.5.1_<arch>.deb pelo uname -m
+  case "$(uname -m)" in
+    i386 | i686) deb_arch=i386 ;;
+    x86_64) deb_arch=amd64 ;;
+    *) deb_arch="?" ;;
+  esac
+  [[ -f "$ROOT/dep/wnbtlscli_2_5_1/wnbtlscli_2.5.1_${deb_arch}.deb" ]] \
+    && ok "pacote VPN ${deb_arch} presente em dep/" || fail "pacote VPN ${deb_arch} presente em dep/"
 
   # apt falso só durante estes testes. O sudo usa o secure_path, que olha
   # /usr/local/sbin antes de /usr/bin, então o falso precisa ficar lá.
@@ -248,7 +250,7 @@ if [[ -f /etc/sysutil-test-image && "$(id -u)" -eq 0 ]]; then
 
   # Tec55
   : >"$CALLS"
-  (cd "$ROOT" && bash -c "$stubs; . func/limitar_consumo.sh; limitar_consumo" >/dev/null 2>&1)
+  (cd "$ROOT" && bash -c ". ./colors.sh; . func/utils/utilities.sh; $stubs; . func/limitar_consumo.sh; limitar_consumo" >/dev/null 2>&1)
   check "limitar_consumo termina sem erro" "$?" 0
   grep -q "apt-get install -y cpulimit\|apt install -y cpulimit" "$CALLS" && ok "cpulimit pedido ao apt" || fail "cpulimit pedido ao apt"
   [[ -x /usr/local/bin/limit.sh ]] && ok "limit.sh copiado para /usr/local/bin" || fail "limit.sh copiado para /usr/local/bin"
@@ -267,16 +269,16 @@ if [[ -f /etc/sysutil-test-image && "$(id -u)" -eq 0 ]]; then
   printf '#!/bin/bash\necho "nano $*" >> %s\n' "$CALLS" >"$EDBIN/nano"
   chmod +x "$EDBIN/nano"
   : >"$CALLS"
-  (cd "$ROOT" && printf '\n' | PATH="$EDBIN:$PATH" bash -c "$stubs; . func/configurar_perifericos.sh; configurar_perifericos" >/dev/null 2>&1)
+  (cd "$ROOT" && printf '\n' | PATH="$EDBIN:$PATH" bash -c "$stubs; . ./colors.sh; . func/utils/utilities.sh; $stubs; . func/configurar_perifericos.sh; editar_regras_manualmente" >/dev/null 2>&1)
   grep -q "nano /usr/local/bin/setty" "$CALLS" && ok "abre /usr/local/bin/setty" || fail "abre /usr/local/bin/setty"
   grep -q "nano /etc/udev/rules.d/90-dispositivos-usb.rules" "$CALLS" && ok "abre a regra udev" || fail "abre a regra udev"
   grep -q "^setty" "$CALLS" && ok "setty executado" || fail "setty executado"
 
   # Remover VPN: guarda a chave antes de apagar /etc/wnbtlscli
-  rm -f "$HOME"/chave_vpn_*.txt
+  rm -f "$HOME"/.sysutil/chave_vpn_*.txt
   (cd "$ROOT" && bash -c "$stubs; . func/remover_vpn.sh; cd /tmp; remover_vpn" >/dev/null 2>&1)
   check "remover_vpn termina sem erro" "$?" 0
-  chaves=("$HOME"/chave_vpn_*.txt)
+  chaves=("$HOME"/.sysutil/chave_vpn_*.txt)
   if [[ -f "${chaves[0]}" ]]; then
     check "chave salva com o conteúdo certo" "$(cat "${chaves[0]}")" "CHAVE-DE-TESTE-123"
     check "chave com permissão 600" "$(stat -c %a "${chaves[0]}")" 600
@@ -289,6 +291,11 @@ if [[ -f /etc/sysutil-test-image && "$(id -u)" -eq 0 ]]; then
   rc=$(cd "$ROOT" && bash -c "$stubs; . func/remover_drive_mfe.sh; cd /tmp; remover_drive_mfe >/dev/null 2>&1; echo \$(pwd)")
   check "remover MFe não muda a pasta atual" "$rc" /tmp
   [[ ! -d /opt/sefaz ]] && ok "/opt/sefaz removida" || fail "/opt/sefaz removida"
+
+  # Remover DocGate
+  rc=$(cd "$ROOT" && printf '\n\n' | bash -c "$stubs; . func/remover_docgate.sh; remover_docgate >/dev/null 2>&1; echo \$?")
+  check "remover DocGate termina sem erro" "$rc" 0
+  [[ ! -d /opt/docgate ]] && ok "/opt/docgate removida" || fail "/opt/docgate removida"
 
   rm -f /usr/local/sbin/apt /usr/local/sbin/apt-get
 fi

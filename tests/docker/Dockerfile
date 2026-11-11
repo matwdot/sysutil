@@ -20,12 +20,9 @@ ENV DEBIAN_FRONTEND=noninteractive \
 # old-releases.ubuntu.com. O 22.04 nunca troca de espelho.
 RUN set -e; \
     . /etc/os-release; \
-    # O DNS do Docker Desktop falha durante o build às vezes: se não achar o
-    # espelho do Ubuntu, usa DNS público só durante este passo.
-    if ! getent hosts archive.ubuntu.com >/dev/null; then \
-      echo "DNS do Docker falhou, usando 1.1.1.1 e 8.8.8.8"; \
-      printf 'nameserver 1.1.1.1\nnameserver 8.8.8.8\n' > /etc/resolv.conf; \
-    fi; \
+    # O DNS do Docker Desktop falha no meio do build (responde e depois para).
+    # Usa DNS público só durante este passo; o contêiner final volta ao normal.
+    printf 'nameserver 1.1.1.1\nnameserver 8.8.8.8\n' > /etc/resolv.conf; \
     echo 'Acquire::ForceIPv4 "true";' > /etc/apt/apt.conf.d/99ipv4; \
     # Só conta como ok quando TODAS as listas baixaram (lista parcial deixa
     # versões que não batem) e git/sudo aparecem. Falha de DNS vira só aviso

@@ -2,7 +2,7 @@
 #
 # sysutil.sh - Script de utilitários para o SysPDV PDV em Linux
 #
-# Versão: 5.2
+# Versão: 8.0
 # Autor: Matheus Wesley
 # GitHub: https://matheuswesley.github.io/devlinks
 # GitHub Projeto: https://matwdot.github.
@@ -13,95 +13,56 @@
 #
 # **************************************************************
 
-# Arquivo com a versão do sistema (pode ser trocado em testes)
-OS_RELEASE_FILE="${SYSUTIL_OS_RELEASE:-/etc/os-release}"
+# Import utilities if not loaded
+if [[ -z "$(type -t error_msg)" ]]; then
+  SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  # shellcheck source=utils/utilities.sh
+  source "${SCRIPT_DIR}/utils/utilities.sh" || {
+    echo "ERRO: Não foi possível carregar utilities.sh"
+    exit 1
+  }
+fi
 
-# Pacote da VPN para o Ubuntu 18.04 (SysPDV é sempre 32 bits)
-VPN_DEB_1804="dep/wnbtlscli_2_5_1/wnbtlscli_2.5.1_i386.deb"
-
-# Mostra a versão do Ubuntu ("18.04", "22.04"...) ou nada se não for Ubuntu
-ubuntu_version() {
-  [[ -r "$OS_RELEASE_FILE" ]] || return 1
-  local id version
-  # shellcheck source=/dev/null
-  id=$(. "$OS_RELEASE_FILE" && echo "$ID")
-  # shellcheck source=/dev/null
-  version=$(. "$OS_RELEASE_FILE" && echo "$VERSION_ID")
-  [[ "$id" == "ubuntu" && -n "$version" ]] || return 1
-  echo "$version"
-}
-
-# Pede a chave e registra a VPN. $1 = comando que recebe a chave
-registrar_chave_vpn() {
-  local cmd="$1" key
-  info_msg "Informe a chave da VPN: "
-  read -r key
-  if [[ -z "$key" ]]; then
-    error_msg "Nenhuma chave informada. Registre depois com: $cmd -k <chave>"
-    return 1
-  fi
-  if sudo "$cmd" -k "$key" && sudo wnbmonitor -r; then
-    sleep 2
-    success_msg "VPN instalada com sucesso!"
-  else
-    error_msg "VPN instalada, mas houve erro ao registrar a chave."
-    return 1
-  fi
-}
-
-# Ubuntu 18.04: pacote .deb local (i386)
-instalar_vpn_1804() {
-  info_msg "Iniciando a instalação da VPN para versão 18.04..."
-  if [[ ! -f "$VPN_DEB_1804" ]]; then
-    error_msg "Pacote não encontrado: $VPN_DEB_1804"
-    return 1
-  fi
-  if ! sudo dpkg -i "$VPN_DEB_1804"; then
-    error_msg "Erro ao instalar a VPN. Verifique permissões e tente novamente."
-    sleep 2
-    return 1
-  fi
-  registrar_chave_vpn wnbupdate
-}
-
-# Ubuntu 22.04 ou superior: instalador on-line do fornecedor
-instalar_vpn_2204() {
-  info_msg "Iniciando a instalação da VPN para versão 22.04 ou superior..."
-  if ! sudo bash ./dep/wnbinstall.sh -i; then
-    error_msg "Erro ao instalar a VPN. Verifique permissões e tente novamente."
-    sleep 2
-    return 1
-  fi
-  registrar_chave_vpn wnbmonitor
-}
-
-# Instala VPN (escolhe o método pela versão do Ubuntu)
+# Instala VPN
 instalar_vpn() {
-  if ! confirm_action "Deseja instalar a VPN?"; then
-    info_msg "Configuração da VPN cancelada."
-    return 0
-  fi
+  local script_dir
+  script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+  local vpn_installer="${script_dir}/dep/wnbtlscli_2_5_1/simple-update.sh"
 
-  local versao
-  versao=$(ubuntu_version)
-
-  case "$versao" in
-    18.04)
-      info_msg "Ubuntu 18.04 detectado."
-      instalar_vpn_1804
-      ;;
-    22.04)
-      info_msg "Ubuntu 22.04 detectado."
-      instalar_vpn_2204
-      ;;
-    *)
-      # Versão não suportada oficialmente: pergunta, como antes
-      warning_msg "Versão do sistema não reconhecida (${versao:-desconhecida})."
-      if confirm_action "Utiliza a versão 18.04?" "n"; then
-        instalar_vpn_1804
+  if confirm_action "Deseja instalar a VPN?"; then
+    info_msg "Iniciando a instalação da VPN..."
+    
+    # Verifica se o script de instalação existe
+    if [ ! -f "$vpn_installer" ]; then
+      error_msg "Script de instalação não encontrado: $vpn_installer"
+      return 1
+    fi
+    
+    # Executa o instalador passando o diretório como parâmetro
+    local vpn_dir="${script_dir}/dep/wnbtlscli_2_5_1"
+    if sudo bash "$vpn_installer" "$vpn_dir"; then
+      # Verifica se precisa registrar a chave
+      if [ ! -f "/etc/wnbtlscli/registry" ]; then
+        info_msg "Informe a chave da VPN: "
+        read -r key
+        if [ -n "$key" ]; then
+          if sudo wnbupdate -k "$key" && sudo wnbmonitor -r; then
+            success_msg "VPN instalada e registrada com sucesso!"
+          else
+            error_msg "VPN instalada, mas houve erro ao registrar a chave. Tente: sudo wnbupdate -k SUA_CHAVE"
+            return 1
+          fi
+        else
+          warning_msg "Chave não informada. Execute manualmente: sudo wnbupdate -k SUA_CHAVE"
+        fi
       else
-        instalar_vpn_2204
+        success_msg "VPN instalada com sucesso!"
       fi
-      ;;
-  esac
+    else
+      error_msg "Erro ao instalar a VPN. Verifique o log acima."
+      return 1
+    fi
+  else
+    info_msg "Instalação da VPN cancelada."
+  fi
 }

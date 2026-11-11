@@ -30,11 +30,5 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ steps.release.outputs.tag_name }}
-          files: |
-            sysutil
-            sysutil.sh
-            install.sh
-            update.sh
-            functions.sh
-            colors.sh
+          files: install.sh
           token: ${{ secrets.GITHUB_TOKEN }}

@@ -44,8 +44,8 @@ run_env() {
       cp -r /src/. /work/ && cd /work
       if command -v shellcheck >/dev/null 2>&1 && shellcheck -s bash -S warning /dev/null >/dev/null 2>&1; then
         echo "--- shellcheck $(shellcheck --version | sed -n 2p)"
-        shellcheck -s bash -S warning -x sysutil sysutil.sh functions.sh colors.sh install.sh update.sh \
-          func/*.sh func/utils/*.sh tests/*.sh tests/docker/*.sh && echo "shellcheck: sem avisos"
+        shellcheck -s bash -S warning -x sysutil functions.sh colors.sh install.sh update.sh config/*.sh \
+          func/*.sh func/utils/*.sh scripts/*.sh tests/*.sh tests/docker/*.sh dep/wnbtlscli_2_5_1/simple-update.sh && echo "shellcheck: sem avisos"
       else
         echo "--- shellcheck: versão deste Ubuntu é antiga demais, pulando (roda no 22.04)"
       fi

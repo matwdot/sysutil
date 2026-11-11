@@ -47,6 +47,9 @@ fake_cmd /usr/local/bin/biometria
 # Driver MFe (remover_drive_mfe)
 fake_cmd /opt/sefaz/cco/remove-driver.sh
 
+# DocGate (remover_docgate)
+fake_cmd /opt/docgate/docgate
+
 # Periféricos (configurar_perifericos)
 fake_cmd /usr/local/bin/setty
 mkdir -p /etc/udev/rules.d

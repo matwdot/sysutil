@@ -1,4 +1,4 @@
-# SysUtil v6.0
+# SysUtil v8.0
 
 Script de utilitários para configuração e manutenção do SysPDV PDV em sistemas Linux.
 
@@ -29,7 +29,7 @@ sysutil
 
 Ou diretamente:
 ```bash
-/opt/sysutil/sysutil.sh
+/opt/sysutil/sysutil
 ```
 
 ## 📋 Funcionalidades
@@ -47,23 +47,27 @@ Ou diretamente:
 ### Estrutura do Projeto
 ```
 sysutil/
-├── sysutil.sh          # Script principal
-├── functions.sh        # Funções auxiliares
-├── colors.sh          # Definições de cores
-├── install.sh         # Script de instalação
-├── run.sh            # Script de execução rápida
-├── func/             # Módulos funcionais
-│   ├── utils/        # Utilitários
-│   └── *.sh         # Scripts específicos
-└── dep/             # Dependências
+├── sysutil              # Script principal (entrypoint único)
+├── functions.sh          # Agregador de funções
+├── colors.sh             # Definições de cores
+├── install.sh            # Instalador
+├── update.sh             # Atualizador
+├── config/
+│   ├── version.sh        # Versão centralizada
+│   └── downloads.conf    # URLs de dependências
+├── func/                 # Módulos funcionais
+│   ├── utils/            # Utilitários (menu, mensagens, download)
+│   └── *.sh              # Scripts de funcionalidades
+├── scripts/              # Scripts auxiliares
+└── dep/                  # Dependências leves (Tec55)
 ```
 
 ### Executar Localmente
 ```bash
 git clone https://github.com/matwdot/sysutil.git
 cd sysutil
-chmod +x sysutil.sh
-./sysutil.sh
+chmod +x sysutil
+./sysutil
 ```
 
 ## 📝 Licença

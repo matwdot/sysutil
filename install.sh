@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# SysUtil - Instalador v7.0
+# SysUtil - Instalador v8.0
 # Uso: curl -fsSL https://raw.githubusercontent.com/matwdot/sysutil/master/install.sh | sudo bash
 #
 
@@ -73,7 +73,7 @@ fi
 clear 2>/dev/null || true
 echo -e "${BOLD}${CYAN}"
 echo "+------------------------------------------+"
-echo "|         SysUtil Instalador v7.0          |"
+echo "|        SysUtil Instalador v8.0           |"
 echo "|     by Matheus Wesley - Casa Magalhaes   |"
 echo "+------------------------------------------+"
 echo -e "${NC}"

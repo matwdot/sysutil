@@ -2,7 +2,7 @@
 #
 # utilities.sh - Funções utilitárias para o SysPDV PDV em Linux
 #
-# Versão: 7.0
+# Versão: 8.0
 # Autor: Matheus Wesley
 # GitHub: https://matheuswesley.github.io/devlinks
 # GitHub Projeto: https://matwdot.github.
